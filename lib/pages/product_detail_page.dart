@@ -11,7 +11,7 @@ class ProductDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          products.title,
+          products.name,
         ),
         centerTitle: true,
       ),
