@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/pages/cart_page.dart';
 import 'package:my_shop/pages/product_detail_page.dart';
 import 'package:my_shop/pages/products_overwiew_page.dart';
 import 'package:my_shop/providers/product_list.dart';
@@ -34,9 +35,10 @@ class MyApp extends StatelessWidget {
           ),
           fontFamily: 'Lato',
         ),
-        home: ProductsOverViewPage(),
+        home: const ProductsOverViewPage(),
         routes: {
           AppRoutes.productDetailPage: (context) => const ProductDetailPage(),
+          AppRoutes.cartPage: (context) => const CartPage(),
           // AppRoutes.productDetailPage: (context) => const CounterPage(),
         },
         debugShowCheckedModeBanner: false,
