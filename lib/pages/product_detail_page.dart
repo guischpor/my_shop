@@ -15,7 +15,38 @@ class ProductDetailPage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Container(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // ignore: sized_box_for_whitespace
+            Container(
+              height: 300,
+              width: double.infinity,
+              child: Image.network(
+                products.imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'R\$ ${products.price}',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              child: Text(
+                products.description,
+                textAlign: TextAlign.center,
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
