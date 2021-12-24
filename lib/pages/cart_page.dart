@@ -58,10 +58,12 @@ class CartPage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Provider.of<OrderList>(
-                        context,
-                        listen: false,
-                      ).addOrder(cart);
+                      if (cart.items.isNotEmpty) {
+                        Provider.of<OrderList>(
+                          context,
+                          listen: false,
+                        ).addOrder(cart);
+                      }
 
                       cart.clear();
                     },
