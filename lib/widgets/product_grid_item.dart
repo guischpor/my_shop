@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_shop/models/cart.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/utils/app_routes.dart';
+import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 import 'package:provider/provider.dart';
 
 class ProductGridItem extends StatelessWidget {
@@ -52,21 +53,19 @@ class ProductGridItem extends StatelessWidget {
             ),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                showSnackBarDialog(
                   backgroundColor: Colors.green,
-                  duration: const Duration(seconds: 2),
-                  action: SnackBarAction(
-                    label: 'Undo',
-                    textColor: Colors.white,
-                    onPressed: () {
-                      cart.removeSingleItem(product.id);
-                    },
-                  ),
-                  content: const Text(
+                  labelActionButton: 'Undo',
+                  textColorLabel: Colors.white,
+                  onPressed: () {
+                    cart.removeSingleItem(product.id);
+                  },
+                  contentWidget: const Text(
                     'Product successfully added!',
                   ),
                 ),
               );
+
               cart.addItem(product);
             },
           ),
