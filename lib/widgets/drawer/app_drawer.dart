@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/utils/app_routes.dart';
+import 'package:my_shop/widgets/drawer/list_tile_drawer.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -14,9 +15,9 @@ class AppDrawer extends StatelessWidget {
             automaticallyImplyLeading: false,
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.shop),
-            title: const Text('Shop'),
+          ListTileDrawer(
+            icon: Icons.shop,
+            title: 'Shop',
             onTap: () {
               Navigator.of(context).pushReplacementNamed(
                 AppRoutes.homePage,
@@ -24,12 +25,22 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.payment),
-            title: const Text('My Orders'),
+          ListTileDrawer(
+            icon: Icons.payment,
+            title: 'My Orders',
             onTap: () {
               Navigator.of(context).pushReplacementNamed(
                 AppRoutes.ordersPage,
+              );
+            },
+          ),
+          const Divider(),
+          ListTileDrawer(
+            icon: Icons.edit,
+            title: 'Manage Products',
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(
+                AppRoutes.productsPage,
               );
             },
           ),
