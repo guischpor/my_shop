@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/models/cart.dart';
 import 'package:my_shop/models/cart_item.dart';
+import 'package:my_shop/widgets/show_dialog.dart';
 import 'package:provider/provider.dart';
 
 class CartItemWidget extends StatelessWidget {
@@ -30,6 +31,21 @@ class CartItemWidget extends StatelessWidget {
           vertical: 4,
         ),
       ),
+      confirmDismiss: (_) {
+        return showDialogModal(
+          context: context,
+          title: 'Tem Certeza?',
+          message: 'Quer remover o item do  carrinho?',
+          textButton1: 'Não',
+          onTapButton1: () {
+            Navigator.of(context).pop(false);
+          },
+          textButton2: 'Sim',
+          onTapButton2: () {
+            Navigator.of(context).pop(true);
+          },
+        );
+      },
       onDismissed: (_) {
         Provider.of<Cart>(
           context,
