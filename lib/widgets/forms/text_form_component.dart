@@ -10,6 +10,7 @@ class TextFormComponent extends StatelessWidget {
   final FocusNode? focusNode;
   final void Function(String)? onFieldSubmitted;
   final int? maxLines;
+  final void Function(String?)? onSaved;
 
   const TextFormComponent({
     Key? key,
@@ -21,6 +22,7 @@ class TextFormComponent extends StatelessWidget {
     this.focusNode,
     this.onFieldSubmitted,
     this.maxLines = 1,
+    this.onSaved,
   }) : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class TextFormComponent extends StatelessWidget {
       focusNode: focusNode,
       onFieldSubmitted: onFieldSubmitted,
       maxLines: maxLines,
+      onSaved: onSaved,
     );
   }
 }

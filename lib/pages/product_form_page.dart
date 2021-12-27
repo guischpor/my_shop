@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_shop/models/product.dart';
 import 'package:my_shop/utils/formatters/real_money_formatter.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
 import 'dart:io';
@@ -12,17 +15,53 @@ class ProductFormPage extends StatefulWidget {
 }
 
 class _ProductFormPageState extends State<ProductFormPage> {
+  final _nameController = TextEditingController();
   final _priceController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _imageUrlController = TextEditingController();
 
   final _priceFocus = FocusNode();
   final _descriptionFocus = FocusNode();
+  final _imageUrlFocus = FocusNode();
+
+  final _formKey = GlobalKey<FormState>();
+
+  final _formData = Map<String, Object>();
+
+  @override
+  void initState() {
+    super.initState();
+    _imageUrlController.addListener(_updateImage);
+  }
 
   @override
   void dispose() {
     super.dispose();
+    _nameController.dispose();
+    _descriptionController.dispose();
     _priceController.dispose();
+    _imageUrlController.dispose();
+    _imageUrlController.removeListener(_updateImage);
+
     _priceFocus.dispose();
     _descriptionFocus.dispose();
+    _imageUrlFocus.dispose();
+  }
+
+  void _updateImage() {
+    setState(() {});
+  }
+
+  void _submitForm() {
+    _formKey.currentState?.save();
+    // print(_formData.values);
+    final newProduct = Product(
+      id: Random().nextDouble().toString(),
+      name: _formData['name'] as String,
+      description: _formData['description'] as String,
+      price: _formData['price'] as double,
+      imageUrl: _formData['imageUrl'] as String,
+    );
   }
 
   @override
@@ -33,6 +72,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
         centerTitle: true,
       ),
       body: _body(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.purple,
+        child: const Icon(Icons.save),
+        onPressed: () => _submitForm(),
+      ),
     );
   }
 
@@ -40,19 +84,22 @@ class _ProductFormPageState extends State<ProductFormPage> {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Form(
+        key: _formKey,
         child: ListView(
           children: [
             TextFormComponent(
-              labelText: 'Nome',
+              labelText: 'Product Name',
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.name,
+              controller: _nameController,
               onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_priceFocus);
               },
+              onSaved: (name) => _formData['name'] = name ?? '',
             ),
             const SizedBox(height: 10),
             TextFormComponent(
-              labelText: 'Preço',
+              labelText: 'Price',
               textInputAction: TextInputAction.next,
               keyboardType: Platform.isIOS
                   ? const TextInputType.numberWithOptions(decimal: true)
@@ -62,17 +109,62 @@ class _ProductFormPageState extends State<ProductFormPage> {
               onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_descriptionFocus);
               },
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                RealMoneyFormatter(),
-              ],
+              onSaved: (price) =>
+                  _formData['price'] = double.parse(price ?? '0'),
+              // inputFormatters: [
+              //   FilteringTextInputFormatter.digitsOnly,
+              //   RealMoneyFormatter(),
+              // ],
             ),
             const SizedBox(height: 10),
             TextFormComponent(
-              labelText: 'Descrição',
+              labelText: 'Description',
               keyboardType: TextInputType.multiline,
+              controller: _descriptionController,
               focusNode: _descriptionFocus,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(_imageUrlFocus);
+              },
               maxLines: 3,
+              onSaved: (description) =>
+                  _formData['description'] = description ?? '',
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: TextFormComponent(
+                    labelText: 'URL Image',
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.done,
+                    focusNode: _imageUrlFocus,
+                    controller: _imageUrlController,
+                    onFieldSubmitted: (_) => _submitForm(),
+                    onSaved: (imageUrl) =>
+                        _formData['imageUrl'] = imageUrl ?? '',
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  height: 100,
+                  width: 100,
+                  margin: const EdgeInsets.only(top: 10, left: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: _imageUrlController.text.isEmpty
+                      ? const Text('Inform the Url')
+                      : Image.network(
+                          _imageUrlController.text,
+                          fit: BoxFit.cover,
+                        ),
+                )
+              ],
             ),
           ],
         ),
