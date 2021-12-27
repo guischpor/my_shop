@@ -70,7 +70,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
             const SizedBox(height: 10),
             TextFormComponent(
               labelText: 'Descrição',
-              textInputAction: TextInputAction.next,
               keyboardType: TextInputType.multiline,
               focusNode: _descriptionFocus,
               maxLines: 3,
