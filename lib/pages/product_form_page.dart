@@ -3,9 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_shop/models/product.dart';
+import 'package:my_shop/providers/form_product_provider.dart';
 import 'package:my_shop/utils/formatters/real_money_formatter.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
 import 'dart:io';
+
+import 'package:provider/provider.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({Key? key}) : super(key: key);
@@ -15,9 +18,9 @@ class ProductFormPage extends StatefulWidget {
 }
 
 class _ProductFormPageState extends State<ProductFormPage> {
-  final _nameController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  // final _nameController = TextEditingController();
+  // final _priceController = TextEditingController();
+  // final _descriptionController = TextEditingController();
   final _imageUrlController = TextEditingController();
 
   final _priceFocus = FocusNode();
@@ -26,7 +29,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final _formData = Map<String, Object>();
+  final _formData = <String, Object>{};
+  
 
   @override
   void initState() {
@@ -37,9 +41,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
   @override
   void dispose() {
     super.dispose();
-    _nameController.dispose();
-    _descriptionController.dispose();
-    _priceController.dispose();
+    // _nameController.dispose();
+    // _descriptionController.dispose();
+    // _priceController.dispose();
     _imageUrlController.dispose();
     _imageUrlController.removeListener(_updateImage);
 
@@ -52,20 +56,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() {});
   }
 
-  void _submitForm() {
-    _formKey.currentState?.save();
-    // print(_formData.values);
-    final newProduct = Product(
-      id: Random().nextDouble().toString(),
-      name: _formData['name'] as String,
-      description: _formData['description'] as String,
-      price: _formData['price'] as double,
-      imageUrl: _formData['imageUrl'] as String,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final FormProductProvider formProvider = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Product Form'),
@@ -75,12 +68,16 @@ class _ProductFormPageState extends State<ProductFormPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple,
         child: const Icon(Icons.save),
-        onPressed: () => _submitForm(),
+        onPressed: () => formProvider.submitForm(
+          formKey: _formKey,
+          formData: _formData,
+        ),
       ),
     );
   }
 
   Widget _body() {
+    final FormProductProvider formProvider = Provider.of(context);
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Form(
@@ -91,11 +88,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
               labelText: 'Product Name',
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.name,
-              controller: _nameController,
+              // controller: _nameController,
               onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_priceFocus);
               },
               onSaved: (name) => _formData['name'] = name ?? '',
+              validator: (_name) {
+                final name = _name ?? '';
+                return formProvider.validateFormName(name);
+              },
             ),
             const SizedBox(height: 10),
             TextFormComponent(
@@ -104,13 +105,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
               keyboardType: Platform.isIOS
                   ? const TextInputType.numberWithOptions(decimal: true)
                   : TextInputType.number,
-              controller: _priceController,
+              // controller: _priceController,
               focusNode: _priceFocus,
               onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_descriptionFocus);
               },
               onSaved: (price) =>
                   _formData['price'] = double.parse(price ?? '0'),
+              validator: (_price) {
+                final priceString = _price ?? '-1';
+                return formProvider.validateFormPrice(priceString);
+              },
               // inputFormatters: [
               //   FilteringTextInputFormatter.digitsOnly,
               //   RealMoneyFormatter(),
@@ -120,7 +125,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             TextFormComponent(
               labelText: 'Description',
               keyboardType: TextInputType.multiline,
-              controller: _descriptionController,
+              // controller: _descriptionController,
               focusNode: _descriptionFocus,
               onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_imageUrlFocus);
@@ -128,6 +133,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
               maxLines: 3,
               onSaved: (description) =>
                   _formData['description'] = description ?? '',
+              validator: (_description) {
+                final description = _description ?? '';
+                return formProvider.validateFormDescription(description);
+              },
             ),
             const SizedBox(height: 10),
             Row(
@@ -140,9 +149,16 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     textInputAction: TextInputAction.done,
                     focusNode: _imageUrlFocus,
                     controller: _imageUrlController,
-                    onFieldSubmitted: (_) => _submitForm(),
+                    onFieldSubmitted: (_) => formProvider.submitForm(
+                      formKey: _formKey,
+                      formData: _formData,
+                    ),
                     onSaved: (imageUrl) =>
                         _formData['imageUrl'] = imageUrl ?? '',
+                    validator: (_imageUrl) {
+                      final imageUrl = _imageUrl ?? '';
+                      return formProvider.isValidImageUrl(imageUrl);
+                    },
                   ),
                 ),
                 const SizedBox(width: 10),

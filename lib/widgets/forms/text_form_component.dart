@@ -11,6 +11,7 @@ class TextFormComponent extends StatelessWidget {
   final void Function(String)? onFieldSubmitted;
   final int? maxLines;
   final void Function(String?)? onSaved;
+  final String? Function(String?)? validator;
 
   const TextFormComponent({
     Key? key,
@@ -23,6 +24,7 @@ class TextFormComponent extends StatelessWidget {
     this.onFieldSubmitted,
     this.maxLines = 1,
     this.onSaved,
+    this.validator,
   }) : super(key: key);
 
   @override
@@ -39,6 +41,7 @@ class TextFormComponent extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       maxLines: maxLines,
       onSaved: onSaved,
+      validator: validator,
     );
   }
 }

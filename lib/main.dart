@@ -7,6 +7,7 @@ import 'package:my_shop/pages/product_page.dart';
 import 'package:my_shop/pages/products_overwiew_page.dart';
 import 'package:my_shop/providers/order_list.dart';
 import 'package:my_shop/providers/product_list.dart';
+import 'package:my_shop/providers/form_product_provider.dart';
 import 'package:my_shop/utils/app_routes.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => OrderList(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FormProductProvider(),
         ),
       ],
       child: MaterialApp(
