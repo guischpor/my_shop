@@ -5,13 +5,13 @@ import 'package:my_shop/pages/product_detail_page.dart';
 import 'package:my_shop/pages/product_form_page.dart';
 import 'package:my_shop/pages/product_page.dart';
 import 'package:my_shop/pages/products_overwiew_page.dart';
-import 'package:my_shop/providers/order_list.dart';
-import 'package:my_shop/providers/product_list.dart';
+import 'package:my_shop/providers/order_list_provider.dart';
+import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/providers/form_product_provider.dart';
 import 'package:my_shop/utils/app_routes.dart';
 import 'package:provider/provider.dart';
 
-import 'models/cart.dart';
+import 'providers/cart_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,13 +25,13 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => ProductList(),
+          create: (_) => ProductListProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => Cart(),
+          create: (_) => CartProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => OrderList(),
+          create: (_) => OrderListProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => FormProductProvider(),

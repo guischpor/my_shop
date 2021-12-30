@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:my_shop/models/cart.dart';
+import 'package:my_shop/providers/cart_provider.dart';
 import 'package:my_shop/models/order_model.dart';
 
-class OrderList with ChangeNotifier {
+class OrderListProvider with ChangeNotifier {
   List<OrderModel> _items = [];
 
   List<OrderModel> get items {
@@ -15,7 +15,7 @@ class OrderList with ChangeNotifier {
     return _items.length;
   }
 
-  void addOrder(Cart cart) {
+  void addOrder(CartProvider cart) {
     _items.insert(
       0,
       OrderModel(

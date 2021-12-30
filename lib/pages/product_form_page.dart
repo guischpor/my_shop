@@ -44,7 +44,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     // _nameController.dispose();
     // _descriptionController.dispose();
     // _priceController.dispose();
-    _imageUrlController.dispose();
+    // _imageUrlController.dispose();
     _imageUrlController.removeListener(_updateImage);
 
     _priceFocus.dispose();
@@ -71,6 +71,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
         onPressed: () => formProvider.submitForm(
           formKey: _formKey,
           formData: _formData,
+          context: context,
         ),
       ),
     );
@@ -152,6 +153,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     onFieldSubmitted: (_) => formProvider.submitForm(
                       formKey: _formKey,
                       formData: _formData,
+                      context: context,
                     ),
                     onSaved: (imageUrl) =>
                         _formData['imageUrl'] = imageUrl ?? '',

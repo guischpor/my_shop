@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/models/cart.dart';
+import 'package:my_shop/providers/cart_provider.dart';
 import 'package:my_shop/models/cart_item.dart';
 import 'package:my_shop/widgets/show_dialog.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +47,7 @@ class CartItemWidget extends StatelessWidget {
         );
       },
       onDismissed: (_) {
-        Provider.of<Cart>(
+        Provider.of<CartProvider>(
           context,
           listen: false,
         ).removedItem(cartItem.productId);
@@ -67,7 +67,7 @@ class CartItemWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 child: FittedBox(
                   child: Text(
-                    '${cartItem.price}',
+                    cartItem.price.toStringAsFixed(2),
                     style: const TextStyle(
                       color: Colors.white,
                     ),
@@ -76,7 +76,8 @@ class CartItemWidget extends StatelessWidget {
               ),
             ),
             title: Text(cartItem.name),
-            subtitle: Text('Total : R\$ ${cartItem.price * cartItem.quantity}'),
+            subtitle: Text(
+                'Total : R\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}'),
             trailing: Text('${cartItem.quantity}x'),
           ),
         ),

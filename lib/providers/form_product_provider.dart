@@ -2,12 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:my_shop/models/product.dart';
+import 'package:my_shop/providers/product_list_provider.dart';
+import 'package:provider/provider.dart';
 
 class FormProductProvider with ChangeNotifier {
   //funcao que salva os dados em uma lista!
   submitForm({
     required GlobalKey<FormState> formKey,
     required Map<String, Object> formData,
+    required BuildContext context,
   }) {
     final isValid = formKey.currentState?.validate() ?? false;
 
@@ -17,14 +20,12 @@ class FormProductProvider with ChangeNotifier {
 
     formKey.currentState?.save();
 
-    // print(_formData.values);
-    final newProduct = Product(
-      id: Random().nextDouble().toString(),
-      name: formData['name'] as String,
-      description: formData['description'] as String,
-      price: formData['price'] as double,
-      imageUrl: formData['imageUrl'] as String,
-    );
+    Provider.of<ProductListProvider>(
+      context,
+      listen: false,
+    ).addProductFromData(formData);
+
+    Navigator.of(context).pop();
 
     notifyListeners();
   }

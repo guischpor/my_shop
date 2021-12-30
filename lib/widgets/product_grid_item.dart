@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/models/cart.dart';
+import 'package:my_shop/providers/cart_provider.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/utils/app_routes.dart';
 import 'package:my_shop/widgets/show_snackbar_dialog.dart';
@@ -11,7 +11,7 @@ class ProductGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
-    final cart = Provider.of<Cart>(context);
+    final cart = Provider.of<CartProvider>(context);
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 

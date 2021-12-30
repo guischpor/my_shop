@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/providers/order_list.dart';
+import 'package:my_shop/providers/order_list_provider.dart';
 import 'package:my_shop/widgets/drawer/app_drawer.dart';
 import 'package:my_shop/widgets/order_widget.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +9,7 @@ class OrdersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OrderList orders = Provider.of(context);
+    final OrderListProvider orders = Provider.of(context);
 
     return Scaffold(
       appBar: AppBar(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/models/cart.dart';
+import 'package:my_shop/providers/cart_provider.dart';
 import 'package:my_shop/utils/app_routes.dart';
 import 'package:my_shop/widgets/drawer/app_drawer.dart';
 import 'package:my_shop/widgets/badge.dart';
@@ -29,7 +29,7 @@ class _ProductsOverViewPageState extends State<ProductsOverViewPage> {
         centerTitle: true,
         actions: [
           popupMenuButton(),
-          Consumer<Cart>(
+          Consumer<CartProvider>(
             child: iconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(AppRoutes.cartPage);
