@@ -34,13 +34,13 @@ class CartItemWidget extends StatelessWidget {
       confirmDismiss: (_) {
         return showDialogModal(
           context: context,
-          title: 'Tem Certeza?',
-          message: 'Quer remover o item do  carrinho?',
-          textButton1: 'Não',
+          title: 'Are you sure?',
+          message: 'Want to remove the item from your cart?',
+          textButton1: 'No',
           onTapButton1: () {
             Navigator.of(context).pop(false);
           },
-          textButton2: 'Sim',
+          textButton2: 'Yes',
           onTapButton2: () {
             Navigator.of(context).pop(true);
           },

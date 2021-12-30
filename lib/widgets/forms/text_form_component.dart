@@ -12,6 +12,7 @@ class TextFormComponent extends StatelessWidget {
   final int? maxLines;
   final void Function(String?)? onSaved;
   final String? Function(String?)? validator;
+  final String? initialValue;
 
   const TextFormComponent({
     Key? key,
@@ -25,6 +26,7 @@ class TextFormComponent extends StatelessWidget {
     this.maxLines = 1,
     this.onSaved,
     this.validator,
+    this.initialValue,
   }) : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class TextFormComponent extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
       ),
+      initialValue: initialValue,
       textInputAction: textInputAction,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,

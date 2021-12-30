@@ -36,7 +36,9 @@ class ProductPage extends StatelessWidget {
         backgroundColor: Colors.purple,
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context).pushNamed(AppRoutes.productsFormPage);
+          Navigator.of(context).pushNamed(
+            AppRoutes.productsFormPage,
+          );
         },
       ),
     );

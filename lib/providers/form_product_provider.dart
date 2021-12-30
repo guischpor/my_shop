@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:my_shop/models/product.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +20,7 @@ class FormProductProvider with ChangeNotifier {
     Provider.of<ProductListProvider>(
       context,
       listen: false,
-    ).addProductFromData(formData);
+    ).saveProduct(formData, context);
 
     Navigator.of(context).pop();
 

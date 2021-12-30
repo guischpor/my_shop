@@ -30,12 +30,32 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _formData = <String, Object>{};
-  
 
   @override
   void initState() {
     super.initState();
     _imageUrlController.addListener(_updateImage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_formData.isEmpty) {
+      final arg = ModalRoute.of(context)?.settings.arguments;
+
+      if (arg != null) {
+        final product = arg as Product;
+
+        _formData['id'] = product.id;
+        _formData['name'] = product.name;
+        _formData['price'] = product.price;
+        _formData['description'] = product.description;
+        _formData['imageUrl'] = product.imageUrl;
+
+        _imageUrlController.text = product.imageUrl;
+      }
+    }
   }
 
   @override
@@ -87,6 +107,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
           children: [
             TextFormComponent(
               labelText: 'Product Name',
+              initialValue: _formData['name']?.toString(),
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.name,
               // controller: _nameController,
@@ -102,6 +123,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             const SizedBox(height: 10),
             TextFormComponent(
               labelText: 'Price',
+              initialValue: _formData['price']?.toString(),
               textInputAction: TextInputAction.next,
               keyboardType: Platform.isIOS
                   ? const TextInputType.numberWithOptions(decimal: true)
@@ -125,6 +147,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             const SizedBox(height: 10),
             TextFormComponent(
               labelText: 'Description',
+              initialValue: _formData['description']?.toString(),
               keyboardType: TextInputType.multiline,
               // controller: _descriptionController,
               focusNode: _descriptionFocus,
