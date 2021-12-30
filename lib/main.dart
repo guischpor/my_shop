@@ -10,7 +10,6 @@ import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/providers/form_product_provider.dart';
 import 'package:my_shop/utils/app_routes.dart';
 import 'package:provider/provider.dart';
-
 import 'providers/cart_provider.dart';
 
 void main() {
