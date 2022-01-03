@@ -202,6 +202,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       ? const Text('Inform the Url')
                       : Image.network(
                           _imageUrlController.text,
+                          height: 100,
+                          width: 100,
                           fit: BoxFit.cover,
                         ),
                 )
