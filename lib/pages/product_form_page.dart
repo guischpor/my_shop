@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/providers/form_product_provider.dart';
+import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/utils/formatters/real_money_formatter.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
 import 'dart:io';
@@ -31,6 +32,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _formData = <String, Object>{};
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -77,24 +80,51 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() {});
   }
 
+  //funcao que salva os dados em uma lista!
+  submitForm({
+    required GlobalKey<FormState> formKey,
+    required Map<String, Object> formData,
+  }) {
+    final isValid = formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
+    formKey.currentState?.save();
+
+    // const Duration(seconds: 4);
+
+    setState(() => _isLoading = true);
+
+    Provider.of<ProductListProvider>(
+      context,
+      listen: false,
+    ).saveProduct(formData, context).then((value) {
+      setState(() => _isLoading = false);
+      Navigator.of(context).pop();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final FormProductProvider formProvider = Provider.of(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Product Form'),
         centerTitle: true,
       ),
-      body: _body(),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : _body(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple,
         child: const Icon(Icons.save),
-        onPressed: () => formProvider.submitForm(
+        onPressed: () => submitForm(
           formKey: _formKey,
           formData: _formData,
-          context: context,
-          scaffoldKey: _scaffoldKey,
         ),
       ),
     );
@@ -176,11 +206,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     textInputAction: TextInputAction.done,
                     focusNode: _imageUrlFocus,
                     controller: _imageUrlController,
-                    onFieldSubmitted: (_) => formProvider.submitForm(
+                    onFieldSubmitted: (_) => submitForm(
                       formKey: _formKey,
                       formData: _formData,
-                      context: context,
-                      scaffoldKey: _scaffoldKey,
                     ),
                     onSaved: (imageUrl) =>
                         _formData['imageUrl'] = imageUrl ?? '',

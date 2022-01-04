@@ -16,10 +16,10 @@ class ProductListProvider with ChangeNotifier {
       _items.where((prod) => prod.isFavorite).toList();
 
   //metodo salve produto
-  void saveProduct(
+  Future<void> saveProduct(
     Map<String, Object> data,
     BuildContext context,
-  ) {
+  ) async {
     bool hasId = data['id'] != null;
 
     final product = Product(
@@ -32,25 +32,74 @@ class ProductListProvider with ChangeNotifier {
 
     //metodo que verifica se ele tem um ID ele alterar, caso não, ele cria uma novo item
     if (hasId) {
-      updateProduct(product);
+      notifyListeners();
+      return updateProduct(product).then((value) {
+        const Duration(seconds: 2);
 
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        showSnackBarDialog(
-          backgroundColor: Colors.green,
-          textColorLabel: Colors.white,
-          labelActionButton: '',
-          onPressed: () => Null,
-          contentWidget: const Text(
-            'Product edited successfully!',
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          showSnackBarDialog(
+            backgroundColor: Colors.green,
+            textColorLabel: Colors.white,
+            labelActionButton: '',
+            onPressed: () => Null,
+            contentWidget: const Text(
+              'Product edited successfully!',
+            ),
           ),
-        ),
-      );
-    } else {
-      addProduct(product, context);
-    }
+        );
+      }).catchError((e) {
+        print("erro ${e.toString()}");
+        const Duration(seconds: 2);
 
-    notifyListeners();
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          showSnackBarDialog(
+            backgroundColor: Colors.red[700],
+            textColorLabel: Colors.white,
+            labelActionButton: '',
+            onPressed: () => Null,
+            contentWidget: const Text(
+              'Product edited error!',
+            ),
+          ),
+        );
+      });
+    } else {
+      notifyListeners();
+      return addProduct(product, context).then((value) {
+        const Duration(seconds: 2);
+
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          showSnackBarDialog(
+            backgroundColor: Colors.green,
+            textColorLabel: Colors.white,
+            labelActionButton: '',
+            onPressed: () => Null,
+            contentWidget: const Text(
+              'Product added successfully!',
+            ),
+          ),
+        );
+      }).catchError((e) {
+        print("erro ${e.toString()}");
+        const Duration(seconds: 2);
+
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          showSnackBarDialog(
+            backgroundColor: Colors.red[700],
+            textColorLabel: Colors.white,
+            labelActionButton: '',
+            onPressed: () => Null,
+            contentWidget: const Text(
+              'Product added error!',
+            ),
+          ),
+        );
+      });
+    }
   }
 
   //metodo add novo produto
@@ -71,23 +120,7 @@ class ProductListProvider with ChangeNotifier {
       ),
     );
 
-    future.then((response) {
-      // if (response.statusCode == 200) {
-      //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     showSnackBarDialog(
-      //       backgroundColor: Colors.green,
-      //       textColorLabel: Colors.white,
-      //       labelActionButton: '',
-      //       onPressed: () => Null,
-      //       contentWidget: const Text(
-      //         'Product successfully added!',
-      //       ),
-      //     ),
-      //   );
-      // }
-
-      // print(jsonDecode(response.body));
+    return future.then<void>((response) {
       final id = jsonDecode(response.body)['name'];
 
       _items.add(Product(
@@ -104,7 +137,7 @@ class ProductListProvider with ChangeNotifier {
     });
   }
 
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) async {
     int index = _items.indexWhere((p) => p.id == product.id);
 
     //verifica se temos o ID correspondente e altera o item!
@@ -112,9 +145,11 @@ class ProductListProvider with ChangeNotifier {
       _items[index] = product;
       notifyListeners();
     }
+
+    return Future.value();
   }
 
-  void removeProduct(Product product) {
+  Future<void> removeProduct(Product product) async {
     int index = _items.indexWhere((p) => p.id == product.id);
 
     //verifica se temos o ID correspondente e remove o item!
@@ -122,6 +157,8 @@ class ProductListProvider with ChangeNotifier {
       _items.removeWhere((p) => p.id == product.id);
       notifyListeners();
     }
+
+    return Future.value();
   }
 
   int get itemsCount {

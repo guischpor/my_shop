@@ -3,31 +3,6 @@ import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:provider/provider.dart';
 
 class FormProductProvider with ChangeNotifier {
-  //funcao que salva os dados em uma lista!
-  submitForm({
-    required GlobalKey<FormState> formKey,
-    required Map<String, Object> formData,
-    required BuildContext context,
-    required GlobalKey<ScaffoldState> scaffoldKey,
-  }) {
-    final isValid = formKey.currentState?.validate() ?? false;
-
-    if (!isValid) {
-      return;
-    }
-
-    formKey.currentState?.save();
-
-    Provider.of<ProductListProvider>(
-      context,
-      listen: false,
-    ).saveProduct(formData, context);
-
-    Navigator.of(context).pop();
-
-    notifyListeners();
-  }
-
   //validação do campo name
   validateFormName(String value) {
     if (value.trim().isEmpty) {
