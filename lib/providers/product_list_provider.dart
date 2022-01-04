@@ -54,10 +54,10 @@ class ProductListProvider with ChangeNotifier {
   }
 
   //metodo add novo produto
-  addProduct(
+  Future<void> addProduct(
     Product product,
     BuildContext context,
-  ) {
+  ) async {
     final future = http.post(
       Uri.parse('$_baseUrl/products.json'),
       body: jsonEncode(
@@ -85,19 +85,6 @@ class ProductListProvider with ChangeNotifier {
       //       ),
       //     ),
       //   );
-      // } else {
-      //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     showSnackBarDialog(
-      //       backgroundColor: Colors.red,
-      //       textColorLabel: Colors.white,
-      //       labelActionButton: '',
-      //       onPressed: () => Null,
-      //       contentWidget: const Text(
-      //         'Product error added!',
-      //       ),
-      //     ),
-      //   );
       // }
 
       // print(jsonDecode(response.body));
@@ -112,6 +99,8 @@ class ProductListProvider with ChangeNotifier {
         isFavorite: product.isFavorite,
       ));
       notifyListeners();
+    }).catchError((e) {
+      print("erro ${e.toString()}");
     });
   }
 

@@ -8,6 +8,7 @@ class FormProductProvider with ChangeNotifier {
     required GlobalKey<FormState> formKey,
     required Map<String, Object> formData,
     required BuildContext context,
+    required GlobalKey<ScaffoldState> scaffoldKey,
   }) {
     final isValid = formKey.currentState?.validate() ?? false;
 

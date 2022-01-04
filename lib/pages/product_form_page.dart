@@ -28,6 +28,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _imageUrlFocus = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _formData = <String, Object>{};
 
@@ -80,6 +81,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   Widget build(BuildContext context) {
     final FormProductProvider formProvider = Provider.of(context);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Product Form'),
         centerTitle: true,
@@ -92,6 +94,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
           formKey: _formKey,
           formData: _formData,
           context: context,
+          scaffoldKey: _scaffoldKey,
         ),
       ),
     );
@@ -177,6 +180,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       formKey: _formKey,
                       formData: _formData,
                       context: context,
+                      scaffoldKey: _scaffoldKey,
                     ),
                     onSaved: (imageUrl) =>
                         _formData['imageUrl'] = imageUrl ?? '',
