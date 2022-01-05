@@ -18,17 +18,20 @@ class ProductPage extends StatelessWidget {
         centerTitle: true,
       ),
       drawer: const AppDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: products.itemsCount,
-          itemBuilder: (context, index) => Column(
-            children: [
-              ProductItem(
-                product: products.items[index],
-              ),
-              const Divider(color: Colors.grey),
-            ],
+      body: RefreshIndicator(
+        onRefresh: () => products.refreshProducts(context),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: products.itemsCount,
+            itemBuilder: (context, index) => Column(
+              children: [
+                ProductItem(
+                  product: products.items[index],
+                ),
+                const Divider(color: Colors.grey),
+              ],
+            ),
           ),
         ),
       ),

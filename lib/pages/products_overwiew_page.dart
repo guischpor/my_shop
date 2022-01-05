@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/providers/cart_provider.dart';
+import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/utils/app_routes.dart';
 import 'package:my_shop/widgets/drawer/app_drawer.dart';
 import 'package:my_shop/widgets/badge.dart';
@@ -20,9 +21,24 @@ class ProductsOverViewPage extends StatefulWidget {
 
 class _ProductsOverViewPageState extends State<ProductsOverViewPage> {
   bool _showFavoriteOnly = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductListProvider>(
+      context,
+      listen: false,
+    ).loadingProducts().then((value) => {
+          setState(() {
+            _isLoading = false;
+          })
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final ProductListProvider products = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Shop'),
@@ -44,8 +60,13 @@ class _ProductsOverViewPageState extends State<ProductsOverViewPage> {
         ],
       ),
       drawer: const AppDrawer(),
-      body: ProductGrid(
-        showFavoriteOnly: _showFavoriteOnly,
+      body: RefreshIndicator(
+        onRefresh: () => products.refreshProducts(context),
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ProductGrid(showFavoriteOnly: _showFavoriteOnly),
       ),
     );
   }

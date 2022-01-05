@@ -83,10 +83,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
   }
 
   //funcao que salva os dados em uma lista!
-  submitForm({
+  Future<void> submitForm({
     required GlobalKey<FormState> formKey,
     required Map<String, Object> formData,
-  }) {
+  }) async {
     final isValid = formKey.currentState?.validate() ?? false;
 
     if (!isValid) {
@@ -95,16 +95,18 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
     formKey.currentState?.save();
 
-    // const Duration(seconds: 4);
-
     setState(() => _isLoading = true);
 
-    Provider.of<ProductListProvider>(
-      context,
-      listen: false,
-    ).saveProduct(formData, context).catchError((onError) {
-      print(onError.toString());
-      return showDialogMessage(
+    try {
+      await Provider.of<ProductListProvider>(
+        context,
+        listen: false,
+      ).saveProduct(formData, context);
+
+      Navigator.of(context).pop();
+    } catch (e) {
+      print(e.toString());
+      await showDialogMessage(
         context: context,
         message:
             'There was an error saving the product! Contact system support!',
@@ -113,10 +115,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
           Navigator.of(context).pop();
         },
       );
-    }).then((value) {
+    } finally {
       setState(() => _isLoading = false);
-      Navigator.of(context).pop();
-    });
+    }
   }
 
   @override

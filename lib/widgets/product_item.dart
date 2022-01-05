@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/core/exceptions/http_exceptions.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/utils/app_routes.dart';
@@ -32,7 +33,7 @@ class ProductItem extends StatelessWidget {
 
   //estrutura do painel
   Widget _panelButtons(BuildContext context) {
-    bool isDisable = false;
+    final msg = ScaffoldMessenger.of(context);
     return SizedBox(
       width: 100,
       child: Row(
@@ -66,27 +67,44 @@ class ProductItem extends StatelessWidget {
                 },
                 textButton2: 'Yes',
                 onTapButton2: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    showSnackBarDialog(
-                      backgroundColor: Colors.red[700],
-                      textColorLabel: Colors.white,
-                      labelActionButton: '',
-                      onPressed: () => Null,
-                      contentWidget: const Text(
-                        'Successfully deleted product!',
-                      ),
-                    ),
-                  );
-
                   Navigator.of(context).pop(true);
                 },
-              ).then((value) {
+              ).then((value) async {
                 if (value ?? false) {
-                  Provider.of<ProductListProvider>(
-                    context,
-                    listen: false,
-                  ).removeProduct(product);
+                  try {
+                    await Provider.of<ProductListProvider>(
+                      context,
+                      listen: false,
+                    ).removeProduct(product, context);
+
+                    msg.hideCurrentSnackBar();
+                    msg.showSnackBar(
+                      showSnackBarDialog(
+                        backgroundColor: Colors.green,
+                        textColorLabel: Colors.white,
+                        labelActionButton: '',
+                        onPressed: () => Null,
+                        contentWidget: const Text(
+                          'Successfully deleted product!',
+                        ),
+                      ),
+                    );
+                  } on HttpException catch (error) {
+                    print(error.toString());
+
+                    msg.hideCurrentSnackBar();
+                    msg.showSnackBar(
+                      showSnackBarDialog(
+                        backgroundColor: Colors.red[700],
+                        textColorLabel: Colors.white,
+                        labelActionButton: '',
+                        onPressed: () => Null,
+                        contentWidget: Text(
+                          error.toString(),
+                        ),
+                      ),
+                    );
+                  }
                 }
               });
             },

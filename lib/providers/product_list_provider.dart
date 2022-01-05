@@ -2,18 +2,58 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:my_shop/core/endpoints/endpoints.dart';
-import 'package:my_shop/data/dummy_data.dart';
+import 'package:my_shop/core/exceptions/http_exceptions.dart';
+// import 'package:my_shop/data/dummy_data.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 
 class ProductListProvider with ChangeNotifier {
-  final _baseUrl = 'https://my-shop-60e72-default-rtdb.firebaseio.com/';
-  final List<Product> _items = dummyProducts;
+  //Endpoints Url
+  final _baseUrl = 'https://my-shop-60e72-default-rtdb.firebaseio.com/products';
+
+  // final List<Product> _items = dummyProducts;
+  final List<Product> _items = [];
 
   List<Product> get items => [..._items];
   List<Product> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
+
+  int get itemsCount {
+    return _items.length;
+  }
+
+  //metodo que atualiza a lista de produtos
+  Future<void> refreshProducts(BuildContext context) async {
+    notifyListeners();
+    return await loadingProducts();
+  }
+
+//metodo que carrega os produtos
+  Future<void> loadingProducts() async {
+    _items.clear();
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl.json'),
+    );
+    // print(jsonDecode(response.body));
+
+    if (response.body == 'null') return;
+
+    Map<String, dynamic> data = jsonDecode(response.body);
+
+    data.forEach((productId, productData) {
+      _items.add(Product(
+        id: productId,
+        name: productData['name'],
+        description: productData['description'],
+        price: productData['price'],
+        imageUrl: productData['imageUrl'],
+        isFavorite: productData['isFavorite'],
+      ));
+    });
+
+    notifyListeners();
+  }
 
   //metodo salve produto
   Future<void> saveProduct(
@@ -33,7 +73,7 @@ class ProductListProvider with ChangeNotifier {
     //metodo que verifica se ele tem um ID ele alterar, caso não, ele cria uma novo item
     if (hasId) {
       notifyListeners();
-      return updateProduct(product).then((response) {
+      return await updateProduct(product).then((response) {
         const Duration(seconds: 2);
 
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -51,9 +91,8 @@ class ProductListProvider with ChangeNotifier {
       });
     } else {
       notifyListeners();
-      return addProduct(product, context).then((response) {
-        const Duration(seconds: 2);
 
+      return await addProduct(product, context).then((response) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           showSnackBarDialog(
@@ -75,8 +114,8 @@ class ProductListProvider with ChangeNotifier {
     Product product,
     BuildContext context,
   ) async {
-    final future = http.post(
-      Uri.parse('$_baseUrl/products.json'),
+    final response = await http.post(
+      Uri.parse('$_baseUrl.json'),
       body: jsonEncode(
         {
           'name': product.name,
@@ -88,19 +127,17 @@ class ProductListProvider with ChangeNotifier {
       ),
     );
 
-    return future.then<void>((response) {
-      final id = jsonDecode(response.body)['name'];
+    final id = jsonDecode(response.body)['name'];
 
-      _items.add(Product(
-        id: id,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl,
-        isFavorite: product.isFavorite,
-      ));
-      notifyListeners();
-    });
+    _items.add(Product(
+      id: id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      isFavorite: product.isFavorite,
+    ));
+    notifyListeners();
   }
 
   Future<void> updateProduct(Product product) async {
@@ -108,26 +145,51 @@ class ProductListProvider with ChangeNotifier {
 
     //verifica se temos o ID correspondente e altera o item!
     if (index >= 0) {
+      await http.patch(
+        Uri.parse('$_baseUrl/${product.id}.json'),
+        body: jsonEncode(
+          {
+            'name': product.name,
+            'description': product.description,
+            'price': product.price,
+            'imageUrl': product.imageUrl,
+          },
+        ),
+      );
+
       _items[index] = product;
       notifyListeners();
     }
-
-    return Future.value();
   }
 
-  Future<void> removeProduct(Product product) async {
+  Future<void> removeProduct(
+    Product product,
+    BuildContext context,
+  ) async {
     int index = _items.indexWhere((p) => p.id == product.id);
 
     //verifica se temos o ID correspondente e remove o item!
     if (index >= 0) {
-      _items.removeWhere((p) => p.id == product.id);
+      final product = _items[index];
+
+      //primeiramente será excluido o item localmente
+      _items.remove(product);
       notifyListeners();
+
+      //caso a resposta de certo, sera removido no firebase
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/${product.id}.json'),
+      );
+
+      //caso contrario, ele recupera os items excluidos
+      if (response.statusCode >= 400) {
+        _items.insert(index, product);
+        notifyListeners();
+        throw HttpException(
+          msg: 'Error deleting the product!',
+          statusCode: response.statusCode,
+        );
+      }
     }
-
-    return Future.value();
-  }
-
-  int get itemsCount {
-    return _items.length;
   }
 }
