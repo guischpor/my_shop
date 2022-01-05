@@ -7,6 +7,8 @@ import 'package:my_shop/providers/form_product_provider.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/utils/formatters/real_money_formatter.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
+import 'package:my_shop/widgets/show_dialog_message.dart';
+import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 import 'dart:io';
 
 import 'package:provider/provider.dart';
@@ -100,7 +102,18 @@ class _ProductFormPageState extends State<ProductFormPage> {
     Provider.of<ProductListProvider>(
       context,
       listen: false,
-    ).saveProduct(formData, context).then((value) {
+    ).saveProduct(formData, context).catchError((onError) {
+      print(onError.toString());
+      return showDialogMessage(
+        context: context,
+        message:
+            'There was an error saving the product! Contact system support!',
+        textButton: 'OK',
+        onTapButton: () {
+          Navigator.of(context).pop();
+        },
+      );
+    }).then((value) {
       setState(() => _isLoading = false);
       Navigator.of(context).pop();
     });

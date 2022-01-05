@@ -33,7 +33,7 @@ class ProductListProvider with ChangeNotifier {
     //metodo que verifica se ele tem um ID ele alterar, caso não, ele cria uma novo item
     if (hasId) {
       notifyListeners();
-      return updateProduct(product).then((value) {
+      return updateProduct(product).then((response) {
         const Duration(seconds: 2);
 
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -48,26 +48,10 @@ class ProductListProvider with ChangeNotifier {
             ),
           ),
         );
-      }).catchError((e) {
-        print("erro ${e.toString()}");
-        const Duration(seconds: 2);
-
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          showSnackBarDialog(
-            backgroundColor: Colors.red[700],
-            textColorLabel: Colors.white,
-            labelActionButton: '',
-            onPressed: () => Null,
-            contentWidget: const Text(
-              'Product edited error!',
-            ),
-          ),
-        );
       });
     } else {
       notifyListeners();
-      return addProduct(product, context).then((value) {
+      return addProduct(product, context).then((response) {
         const Duration(seconds: 2);
 
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -79,22 +63,6 @@ class ProductListProvider with ChangeNotifier {
             onPressed: () => Null,
             contentWidget: const Text(
               'Product added successfully!',
-            ),
-          ),
-        );
-      }).catchError((e) {
-        print("erro ${e.toString()}");
-        const Duration(seconds: 2);
-
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          showSnackBarDialog(
-            backgroundColor: Colors.red[700],
-            textColorLabel: Colors.white,
-            labelActionButton: '',
-            onPressed: () => Null,
-            contentWidget: const Text(
-              'Product added error!',
             ),
           ),
         );
@@ -132,8 +100,6 @@ class ProductListProvider with ChangeNotifier {
         isFavorite: product.isFavorite,
       ));
       notifyListeners();
-    }).catchError((e) {
-      print("erro ${e.toString()}");
     });
   }
 
