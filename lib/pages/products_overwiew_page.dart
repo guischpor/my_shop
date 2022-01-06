@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/core/utils/app_routes.dart';
 import 'package:my_shop/providers/cart_provider.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
-import 'package:my_shop/utils/app_routes.dart';
 import 'package:my_shop/widgets/drawer/app_drawer.dart';
 import 'package:my_shop/widgets/badge.dart';
 import 'package:my_shop/widgets/product_grid.dart';
@@ -72,6 +72,7 @@ class _ProductsOverViewPageState extends State<ProductsOverViewPage> {
   }
 
   PopupMenuButton<FilterOptions> popupMenuButton() {
+    final ProductListProvider products = Provider.of(context);
     return PopupMenuButton(
       //icon: const Icon(Icons.more_vert),
       itemBuilder: (_) => [
@@ -89,8 +90,10 @@ class _ProductsOverViewPageState extends State<ProductsOverViewPage> {
           () {
             if (selectedValue == FilterOptions.favorite) {
               _showFavoriteOnly = true;
+              products.refreshProducts(context);
             } else {
               _showFavoriteOnly = false;
+              products.refreshProducts(context);
             }
           },
         );

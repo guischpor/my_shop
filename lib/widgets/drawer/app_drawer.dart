@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/utils/app_routes.dart';
+import 'package:my_shop/core/utils/app_routes.dart';
 import 'package:my_shop/widgets/drawer/list_tile_drawer.dart';
 
 class AppDrawer extends StatelessWidget {

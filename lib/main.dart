@@ -8,8 +8,8 @@ import 'package:my_shop/pages/products_overwiew_page.dart';
 import 'package:my_shop/providers/order_list_provider.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/providers/form_product_provider.dart';
-import 'package:my_shop/utils/app_routes.dart';
 import 'package:provider/provider.dart';
+import 'core/utils/app_routes.dart';
 import 'providers/cart_provider.dart';
 
 void main() {

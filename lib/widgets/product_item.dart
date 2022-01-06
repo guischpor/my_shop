@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/core/exceptions/http_exceptions.dart';
+import 'package:my_shop/core/utils/app_routes.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
-import 'package:my_shop/utils/app_routes.dart';
 import 'package:my_shop/widgets/show_dialog.dart';
 import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 import 'package:provider/provider.dart';

@@ -3,14 +3,12 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:my_shop/core/exceptions/http_exceptions.dart';
+import 'package:my_shop/core/utils/constants/endpoints.dart';
 // import 'package:my_shop/data/dummy_data.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 
 class ProductListProvider with ChangeNotifier {
-  //Endpoints Url
-  final _baseUrl = 'https://my-shop-60e72-default-rtdb.firebaseio.com/products';
-
   // final List<Product> _items = dummyProducts;
   final List<Product> _items = [];
 
@@ -33,7 +31,7 @@ class ProductListProvider with ChangeNotifier {
     _items.clear();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl.json'),
+      Uri.parse('${Endpoints.productBaseUrl}.json'),
     );
     // print(jsonDecode(response.body));
 
@@ -115,7 +113,7 @@ class ProductListProvider with ChangeNotifier {
     BuildContext context,
   ) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl.json'),
+      Uri.parse('${Endpoints.productBaseUrl}.json'),
       body: jsonEncode(
         {
           'name': product.name,
@@ -146,7 +144,7 @@ class ProductListProvider with ChangeNotifier {
     //verifica se temos o ID correspondente e altera o item!
     if (index >= 0) {
       await http.patch(
-        Uri.parse('$_baseUrl/${product.id}.json'),
+        Uri.parse('${Endpoints.productBaseUrl}/${product.id}.json'),
         body: jsonEncode(
           {
             'name': product.name,
@@ -178,7 +176,7 @@ class ProductListProvider with ChangeNotifier {
 
       //caso a resposta de certo, sera removido no firebase
       final response = await http.delete(
-        Uri.parse('$_baseUrl/${product.id}.json'),
+        Uri.parse('${Endpoints.productBaseUrl}/${product.id}.json'),
       );
 
       //caso contrario, ele recupera os items excluidos
