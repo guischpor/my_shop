@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/pages/auth_page.dart';
 import 'package:my_shop/pages/cart_page.dart';
 import 'package:my_shop/pages/orders_page.dart';
 import 'package:my_shop/pages/product_detail_page.dart';
 import 'package:my_shop/pages/product_form_page.dart';
 import 'package:my_shop/pages/product_page.dart';
 import 'package:my_shop/pages/products_overwiew_page.dart';
+import 'package:my_shop/providers/auth_form_provider.dart';
 import 'package:my_shop/providers/order_list_provider.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/providers/form_product_provider.dart';
@@ -35,6 +37,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => FormProductProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => AuthFormProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -47,6 +52,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: const ProductsOverViewPage(),
         routes: {
+          AppRoutes.authPage: (context) => const AuthPage(),
           AppRoutes.homePage: (context) => const ProductsOverViewPage(),
           AppRoutes.productDetailPage: (context) => const ProductDetailPage(),
           AppRoutes.cartPage: (context) => const CartPage(),
