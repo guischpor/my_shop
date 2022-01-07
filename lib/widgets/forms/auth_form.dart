@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/providers/auth_form_provider.dart';
+import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,7 @@ class _AuthFormState extends State<AuthForm> {
     });
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     final isValid = _formKey.currentState?.validate() ?? false;
 
     if (!isValid) return;
@@ -48,10 +49,14 @@ class _AuthFormState extends State<AuthForm> {
 
     _formKey.currentState?.save();
 
-    if(_isLogin()) {
+    AuthProvider auth = Provider.of(context, listen: false);
+
+    if (_isLogin()) {
       //Enviar Requisição de login
+      await auth.signIn(_authData['email']!, _authData['password']!);
     } else {
       //Enviar Requisição de SignUp
+      await auth.signup(_authData['email']!, _authData['password']!);
     }
 
     setState(() => _isLoading = false);

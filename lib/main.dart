@@ -7,6 +7,7 @@ import 'package:my_shop/pages/product_form_page.dart';
 import 'package:my_shop/pages/product_page.dart';
 import 'package:my_shop/pages/products_overwiew_page.dart';
 import 'package:my_shop/providers/auth_form_provider.dart';
+import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/providers/order_list_provider.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/providers/form_product_provider.dart';
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => AuthFormProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
         ),
       ],
       child: MaterialApp(
