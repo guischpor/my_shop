@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/core/exceptions/auth_exception.dart';
 import 'package:my_shop/providers/auth_form_provider.dart';
 import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
 import 'package:provider/provider.dart';
+
+import '../show_dialog_message.dart';
 
 enum AuthMode {
   signUp,
@@ -51,12 +54,34 @@ class _AuthFormState extends State<AuthForm> {
 
     AuthProvider auth = Provider.of(context, listen: false);
 
-    if (_isLogin()) {
-      //Enviar Requisição de login
-      await auth.signIn(_authData['email']!, _authData['password']!);
-    } else {
-      //Enviar Requisição de SignUp
-      await auth.signup(_authData['email']!, _authData['password']!);
+    try {
+      if (_isLogin()) {
+        //Enviar Requisição de login
+        await auth.signIn(_authData['email']!, _authData['password']!);
+      } else {
+        //Enviar Requisição de SignUp
+        await auth.signup(_authData['email']!, _authData['password']!);
+      }
+    } on AuthException catch (error) {
+      return showDialogMessage(
+        context: context,
+        message: error.toString(),
+        textButton: 'OK',
+        onTapButton: () {
+          Navigator.of(context).pop();
+          setState(() => _isLoading = false);
+        },
+      );
+    } catch(error) {
+      return showDialogMessage(
+        context: context,
+        message: 'Ocorreu um erro inesperado!',
+        textButton: 'OK',
+        onTapButton: () {
+          Navigator.of(context).pop();
+          setState(() => _isLoading = false);
+        },
+      );
     }
 
     setState(() => _isLoading = false);

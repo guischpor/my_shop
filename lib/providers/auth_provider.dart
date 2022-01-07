@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:my_shop/core/exceptions/auth_exception.dart';
 import 'package:my_shop/core/utils/constants/endpoints.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -22,16 +23,22 @@ class AuthProvider with ChangeNotifier {
       }),
     );
 
-    print(response.body);
+    final body = jsonDecode(response.body);
+
+    if (body['error'] != null) {
+      throw AuthException(body['error']['message']);
+    }
+
+    print(body);
   }
 
   // metodo de cadastrar usuários
   Future<void> signup(String email, String password) async {
-    await _authenticate(email, password, '${Endpoints.signUp}');
+    return await _authenticate(email, password, '${Endpoints.signUp}');
   }
 
   // metodo de login
   Future<void> signIn(String email, String password) async {
-    await _authenticate(email, password, '${Endpoints.signIn}');
+    return await _authenticate(email, password, '${Endpoints.signIn}');
   }
 }
