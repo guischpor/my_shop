@@ -10,7 +10,16 @@ import 'package:provider/single_child_widget.dart';
 class ProvidersList {
   final List<SingleChildWidget> providers = [
     ChangeNotifierProvider(
-      create: (_) => ProductListProvider(),
+      create: (_) => AuthProvider(),
+    ),
+    ChangeNotifierProxyProvider<AuthProvider, ProductListProvider>(
+      create: (_) => ProductListProvider('', []),
+      update: (context, auth, previous) {
+        return ProductListProvider(
+          auth.token ?? '',
+          previous?.items ?? [],
+        );
+      },
     ),
     ChangeNotifierProvider(
       create: (_) => CartProvider(),
@@ -23,9 +32,6 @@ class ProvidersList {
     ),
     ChangeNotifierProvider(
       create: (_) => AuthFormProvider(),
-    ),
-    ChangeNotifierProvider(
-      create: (_) => AuthProvider(),
     ),
   ];
 }

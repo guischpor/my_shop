@@ -10,11 +10,14 @@ import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 
 class ProductListProvider with ChangeNotifier {
   // final List<Product> _items = dummyProducts;
-  final List<Product> _items = [];
+  String _token;
+  List<Product> _items = [];
 
   List<Product> get items => [..._items];
   List<Product> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
+
+  ProductListProvider(this._token, this._items);
 
   int get itemsCount {
     return _items.length;
@@ -31,7 +34,7 @@ class ProductListProvider with ChangeNotifier {
     _items.clear();
 
     final response = await http.get(
-      Uri.parse('${Endpoints.productBaseUrl}.json'),
+      Uri.parse('${Endpoints.productBaseUrl}.json?auth=$_token'),
     );
     // print(jsonDecode(response.body));
 
