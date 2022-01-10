@@ -8,11 +8,14 @@ import 'package:my_shop/providers/cart_provider.dart';
 import 'package:my_shop/models/order_model.dart';
 
 class OrderListProvider with ChangeNotifier {
+  String _token;
   List<OrderModel> _items = [];
 
   List<OrderModel> get items {
     return [..._items];
   }
+
+  OrderListProvider(this._token, this._items);
 
   //retorna a quantidade de itens de pedido
   int get itemsCount {
@@ -27,10 +30,12 @@ class OrderListProvider with ChangeNotifier {
 
   //metodo que carrega os produtos
   Future<void> loadingOrders() async {
-    _items.clear();
+    List<OrderModel> items = [];
 
     final response = await http.get(
-      Uri.parse('${Endpoints.ordersBaseUrl}.json'),
+      Uri.parse(
+        '${Endpoints.ordersBaseUrl}.json?auth=$_token',
+      ),
     );
 
     if (response.body == 'null') return;
@@ -39,7 +44,7 @@ class OrderListProvider with ChangeNotifier {
 
     data.forEach(
       (orderId, orderData) {
-        _items.add(
+        items.add(
           OrderModel(
             id: orderId,
             date: DateTime.parse(orderData['date']),
@@ -58,6 +63,8 @@ class OrderListProvider with ChangeNotifier {
       },
     );
 
+    _items = items.reversed.toList();
+
     notifyListeners();
   }
 
@@ -65,7 +72,9 @@ class OrderListProvider with ChangeNotifier {
     final date = DateTime.now();
 
     final response = await http.post(
-      Uri.parse('${Endpoints.ordersBaseUrl}.json'),
+      Uri.parse(
+        '${Endpoints.ordersBaseUrl}.json?auth=$_token',
+      ),
       body: jsonEncode(
         {
           'total': cart.totalAmount,

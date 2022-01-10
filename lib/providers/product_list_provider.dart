@@ -34,7 +34,9 @@ class ProductListProvider with ChangeNotifier {
     _items.clear();
 
     final response = await http.get(
-      Uri.parse('${Endpoints.productBaseUrl}.json?auth=$_token'),
+      Uri.parse(
+        '${Endpoints.productBaseUrl}.json?auth=$_token',
+      ),
     );
     // print(jsonDecode(response.body));
 
@@ -116,7 +118,9 @@ class ProductListProvider with ChangeNotifier {
     BuildContext context,
   ) async {
     final response = await http.post(
-      Uri.parse('${Endpoints.productBaseUrl}.json'),
+      Uri.parse(
+        '${Endpoints.productBaseUrl}.json?auth=$_token',
+      ),
       body: jsonEncode(
         {
           'name': product.name,
@@ -147,7 +151,9 @@ class ProductListProvider with ChangeNotifier {
     //verifica se temos o ID correspondente e altera o item!
     if (index >= 0) {
       await http.patch(
-        Uri.parse('${Endpoints.productBaseUrl}/${product.id}.json'),
+        Uri.parse(
+          '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
+        ),
         body: jsonEncode(
           {
             'name': product.name,
@@ -179,7 +185,9 @@ class ProductListProvider with ChangeNotifier {
 
       //caso a resposta de certo, sera removido no firebase
       final response = await http.delete(
-        Uri.parse('${Endpoints.productBaseUrl}/${product.id}.json'),
+        Uri.parse(
+          '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
+        ),
       );
 
       //caso contrario, ele recupera os items excluidos

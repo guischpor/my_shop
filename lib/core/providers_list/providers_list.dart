@@ -1,3 +1,4 @@
+import 'package:my_shop/models/product.dart';
 import 'package:my_shop/providers/auth_form_provider.dart';
 import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/providers/cart_provider.dart';
@@ -21,11 +22,17 @@ class ProvidersList {
         );
       },
     ),
-    ChangeNotifierProvider(
-      create: (_) => CartProvider(),
+    ChangeNotifierProxyProvider<AuthProvider, OrderListProvider>(
+      create: (_) => OrderListProvider('', []),
+      update: (context, auth, previous) {
+        return OrderListProvider(
+          auth.token ?? '',
+          previous?.items ?? [],
+        );
+      },
     ),
     ChangeNotifierProvider(
-      create: (_) => OrderListProvider(),
+      create: (_) => CartProvider(),
     ),
     ChangeNotifierProvider(
       create: (_) => FormProductProvider(),
