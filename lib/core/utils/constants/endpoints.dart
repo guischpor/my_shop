@@ -1,4 +1,8 @@
 class Endpoints {
+  //baseURL User Favorite
+  static const userFavoritesUrl =
+      'https://my-shop-60e72-default-rtdb.firebaseio.com/userFavorites';
+
   //baseURL Produtcts and Orders
   static const productBaseUrl =
       'https://my-shop-60e72-default-rtdb.firebaseio.com/products';

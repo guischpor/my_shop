@@ -9,13 +9,18 @@ import 'package:my_shop/models/order_model.dart';
 
 class OrderListProvider with ChangeNotifier {
   String _token;
+  String _userId;
   List<OrderModel> _items = [];
 
   List<OrderModel> get items {
     return [..._items];
   }
 
-  OrderListProvider(this._token, this._items);
+  OrderListProvider([
+    this._token = '',
+    this._userId = '',
+    this._items = const [],
+  ]);
 
   //retorna a quantidade de itens de pedido
   int get itemsCount {
@@ -34,7 +39,7 @@ class OrderListProvider with ChangeNotifier {
 
     final response = await http.get(
       Uri.parse(
-        '${Endpoints.ordersBaseUrl}.json?auth=$_token',
+        '${Endpoints.ordersBaseUrl}/$_userId.json?auth=$_token',
       ),
     );
 
@@ -73,7 +78,7 @@ class OrderListProvider with ChangeNotifier {
 
     final response = await http.post(
       Uri.parse(
-        '${Endpoints.ordersBaseUrl}.json?auth=$_token',
+        '${Endpoints.ordersBaseUrl}/$_userId.json?auth=$_token',
       ),
       body: jsonEncode(
         {

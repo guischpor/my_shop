@@ -29,12 +29,16 @@ class OrdersPage extends StatelessWidget {
               return const Center(child: Text('Error loading my orders!'));
             } else {
               return Consumer<OrderListProvider>(
-                builder: (context, orders, child) => ListView.builder(
-                  itemCount: orders.itemsCount,
-                  itemBuilder: (context, index) => OrderWidget(
-                    order: orders.items[index],
-                  ),
-                ),
+                builder: (context, orders, child) => orders.items.isEmpty
+                    ? const Center(
+                        child: Text('There is no order in your list!'),
+                      )
+                    : ListView.builder(
+                        itemCount: orders.itemsCount,
+                        itemBuilder: (context, index) => OrderWidget(
+                          order: orders.items[index],
+                        ),
+                      ),
               );
             }
           },

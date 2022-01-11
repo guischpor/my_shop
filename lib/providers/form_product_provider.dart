@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/providers/product_list_provider.dart';
-import 'package:provider/provider.dart';
 
 class FormProductProvider with ChangeNotifier {
   //validação do campo name

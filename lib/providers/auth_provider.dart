@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -8,8 +9,9 @@ import 'package:my_shop/core/utils/constants/endpoints.dart';
 class AuthProvider with ChangeNotifier {
   String? _token;
   String? _email;
-  String? _uid;
+  String? _userId;
   DateTime? _expireDate;
+  Timer? _logoutTimer;
 
   //metodo que verifica se o usuario ainda está logado
   bool get isAuth {
@@ -28,8 +30,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   //metodo que verifica o ID do usuario, caso esteja autenticado
-  String? get id {
-    return isAuth ? _uid : null;
+  String? get userId {
+    return isAuth ? _userId : null;
   }
 
   Future<void> _authenticate(
@@ -56,8 +58,7 @@ class AuthProvider with ChangeNotifier {
     } else {
       _token = body['idToken'];
       _email = body['email'];
-      _uid = body['localId'];
-
+      _userId = body['localId'];
       _expireDate = DateTime.now().add(Duration(
         seconds: int.parse(body['expiresIn']),
       ));
@@ -74,5 +75,14 @@ class AuthProvider with ChangeNotifier {
   // metodo de login
   Future<void> signIn(String email, String password) async {
     return await _authenticate(email, password, '${Endpoints.signIn}');
+  }
+
+  //metodo que desloga o usuario do app
+  void logout() {
+    _email = null;
+    _token = null;
+    _userId = null;
+    _expireDate = null;
+    notifyListeners();
   }
 }

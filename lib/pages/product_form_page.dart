@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_shop/models/product.dart';
@@ -8,7 +6,6 @@ import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/core/utils/formatters/real_money_formatter.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
 import 'package:my_shop/widgets/show_dialog_message.dart';
-import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 import 'dart:io';
 
 import 'package:provider/provider.dart';
