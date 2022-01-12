@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_shop/core/exceptions/auth_exception.dart';
@@ -63,6 +62,8 @@ class AuthProvider with ChangeNotifier {
         seconds: int.parse(body['expiresIn']),
       ));
 
+      _autoLogout();
+
       notifyListeners();
     }
   }
@@ -83,6 +84,24 @@ class AuthProvider with ChangeNotifier {
     _token = null;
     _userId = null;
     _expireDate = null;
+    _clearLogoutTimer();
     notifyListeners();
+  }
+
+  //metodo que limpa o timer do logout
+  void _clearLogoutTimer() {
+    _logoutTimer?.cancel();
+    _logoutTimer = null;
+  }
+
+  //metodo que faz o logout automatico apos um determinado tempo
+  void _autoLogout() {
+    _clearLogoutTimer();
+    final timeToLogout = _expireDate?.difference(DateTime.now()).inSeconds;
+    print(timeToLogout);
+    _logoutTimer = Timer(
+      Duration(seconds: timeToLogout ?? 0),
+      logout,
+    );
   }
 }
