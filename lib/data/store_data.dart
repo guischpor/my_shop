@@ -37,4 +37,10 @@ class StoreData {
       return {};
     }
   }
+
+  //metodo que remove uma string
+  static Future<bool> remove(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.remove(key);
+  }
 }

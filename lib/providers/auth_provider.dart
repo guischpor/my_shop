@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_shop/core/exceptions/auth_exception.dart';
 import 'package:my_shop/core/utils/constants/endpoints.dart';
+import 'package:my_shop/data/store_data.dart';
 
 class AuthProvider with ChangeNotifier {
   String? _token;
@@ -62,6 +63,14 @@ class AuthProvider with ChangeNotifier {
         seconds: int.parse(body['expiresIn']),
       ));
 
+      //metodo que salva as informações de login automatico
+      StoreData.saveMap('userData', {
+        'token': _token,
+        'email': _email,
+        'userId': _userId,
+        'expireDate': _expireDate!.toIso8601String(),
+      });
+
       _autoLogout();
 
       notifyListeners();
@@ -78,6 +87,34 @@ class AuthProvider with ChangeNotifier {
     return await _authenticate(email, password, '${Endpoints.signIn}');
   }
 
+  //metodo que tenta fazer o auto login, assim que iniciamos o app novamente
+  Future<void> tryAutoLogin() async {
+    //verifica se você já está autenticado, ai retorna e sai do metodo!
+    if (isAuth) return;
+
+    //tentamos agora pegar os dados de userData
+    final userData = await StoreData.getMap('userData');
+
+    //caso o userData estiver vazio apenas retorna.
+    if (userData.isEmpty) return;
+
+    //ele pega agora a data de expiração, e verifica se o horario de expiração esta para o passado, então sai!
+    final expireDate = DateTime.parse(userData['expireDate']);
+
+    if (expireDate.isBefore(DateTime.now())) return;
+
+    //depois de todas as verificações é que vamos tentar restaurar os dados
+    _token = userData['token'];
+    _email = userData['email'];
+    _userId = userData['_userId'];
+    _expireDate = expireDate;
+
+    //recuperado as informações, chamamos agora o autologout
+    _autoLogout();
+
+    notifyListeners();
+  }
+
   //metodo que desloga o usuario do app
   void logout() {
     _email = null;
@@ -85,7 +122,9 @@ class AuthProvider with ChangeNotifier {
     _userId = null;
     _expireDate = null;
     _clearLogoutTimer();
-    notifyListeners();
+    StoreData.remove('userData').then(
+      (_) => notifyListeners(),
+    );
   }
 
   //metodo que limpa o timer do logout
