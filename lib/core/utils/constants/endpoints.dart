@@ -10,6 +10,10 @@ class Endpoints {
   static const ordersBaseUrl =
       'https://my-shop-60e72-default-rtdb.firebaseio.com/orders';
 
+  //baseURL User Categories
+  static const categoriesUrl =
+      'https://my-shop-60e72-default-rtdb.firebaseio.com/categories';
+
   //Auth Login and Signup
 
   static const keyApiWeb = 'AIzaSyAkKiw68T60NpZ_AsjY58zO9TciVSwC28I';

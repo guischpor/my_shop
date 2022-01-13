@@ -5,4 +5,6 @@ class AppRoutes {
   static const ordersPage = '/orders-page';
   static const productsPage = '/products-page';
   static const productsFormPage = '/products-form-page';
+  static const categoriesPage = '/categories-page';
+  static const categoriesFormPage = '/categories-form-page';
 }

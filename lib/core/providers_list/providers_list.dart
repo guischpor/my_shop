@@ -1,6 +1,8 @@
 import 'package:my_shop/providers/auth_form_provider.dart';
 import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/providers/cart_provider.dart';
+import 'package:my_shop/providers/categories_form_provider.dart';
+import 'package:my_shop/providers/categories_provider.dart';
 import 'package:my_shop/providers/form_product_provider.dart';
 import 'package:my_shop/providers/order_list_provider.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
@@ -31,6 +33,18 @@ class ProvidersList {
           previous?.items ?? [],
         );
       },
+    ),
+    ChangeNotifierProxyProvider<AuthProvider, CategoriesProvider>(
+      create: (_) => CategoriesProvider(),
+      update: (context, auth, previous) {
+        return CategoriesProvider(
+          auth.token ?? '',
+          previous?.items ?? [],
+        );
+      },
+    ),
+    ChangeNotifierProvider(
+      create: (_) => CategoriesFormProvider(),
     ),
     ChangeNotifierProvider(
       create: (_) => CartProvider(),

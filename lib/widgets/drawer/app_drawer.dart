@@ -48,6 +48,16 @@ class AppDrawer extends StatelessWidget {
           ),
           const Divider(),
           ListTileDrawer(
+            icon: Icons.category,
+            title: 'Manage Categories',
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(
+                AppRoutes.categoriesPage,
+              );
+            },
+          ),
+          const Divider(),
+          ListTileDrawer(
             icon: Icons.exit_to_app,
             title: 'Logout',
             onTap: () {
