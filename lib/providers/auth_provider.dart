@@ -71,7 +71,7 @@ class AuthProvider with ChangeNotifier {
         'expireDate': _expireDate!.toIso8601String(),
       });
 
-      _autoLogout();
+      // _autoLogout();
 
       notifyListeners();
     }
@@ -110,7 +110,7 @@ class AuthProvider with ChangeNotifier {
     _expireDate = expireDate;
 
     //recuperado as informações, chamamos agora o autologout
-    _autoLogout();
+    // _autoLogout();
 
     notifyListeners();
   }
@@ -121,26 +121,26 @@ class AuthProvider with ChangeNotifier {
     _token = null;
     _userId = null;
     _expireDate = null;
-    _clearLogoutTimer();
+    // _clearLogoutTimer();
     StoreData.remove('userData').then(
       (_) => notifyListeners(),
     );
   }
 
   //metodo que limpa o timer do logout
-  void _clearLogoutTimer() {
-    _logoutTimer?.cancel();
-    _logoutTimer = null;
-  }
+  // void _clearLogoutTimer() {
+  //   _logoutTimer?.cancel();
+  //   _logoutTimer = null;
+  // }
 
   //metodo que faz o logout automatico apos um determinado tempo
-  void _autoLogout() {
-    _clearLogoutTimer();
-    final timeToLogout = _expireDate?.difference(DateTime.now()).inSeconds;
-    print(timeToLogout);
-    _logoutTimer = Timer(
-      Duration(seconds: timeToLogout ?? 0),
-      logout,
-    );
-  }
+  // void _autoLogout() {
+  //   _clearLogoutTimer();
+  //   final timeToLogout = _expireDate?.difference(DateTime.now()).inSeconds;
+  //   print(timeToLogout);
+  //   _logoutTimer = Timer(
+  //     Duration(seconds: timeToLogout ?? 0),
+  //     logout,
+  //   );
+  // }
 }

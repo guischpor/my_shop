@@ -2,7 +2,9 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:my_shop/providers/categories_form_provider.dart';
+import 'package:my_shop/providers/categories_provider.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
+import 'package:my_shop/widgets/show_dialog_message.dart';
 import 'package:provider/provider.dart';
 
 class CategoriesFormPage extends StatefulWidget {
@@ -14,7 +16,6 @@ class CategoriesFormPage extends StatefulWidget {
 
 class _CategoriesFormPageState extends State<CategoriesFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formData = <String, Object>{};
   bool _isLoading = false;
 
@@ -29,6 +30,30 @@ class _CategoriesFormPageState extends State<CategoriesFormPage> {
     }
 
     formKey.currentState?.save();
+
+    setState(() => _isLoading = true);
+
+    try {
+      await Provider.of<CategoriesProvider>(
+        context,
+        listen: false,
+      ).saveCategorie(formData, context,);
+
+      Navigator.of(context).pop();
+    } catch (e) {
+      print(e.toString());
+      await showDialogMessage(
+        context: context,
+        message:
+            'There was an error saving the categories! Contact system support!',
+        textButton: 'OK',
+        onTapButton: () {
+          Navigator.of(context).pop();
+        },
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -38,7 +63,11 @@ class _CategoriesFormPageState extends State<CategoriesFormPage> {
         title: const Text('Categories Form Page'),
         centerTitle: true,
       ),
-      body: _body(context),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : _body(context),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple,
         child: const Icon(Icons.save),
@@ -55,21 +84,21 @@ class _CategoriesFormPageState extends State<CategoriesFormPage> {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Form(
-        key: _formKey,
+          key: _formKey,
           child: ListView(
-        children: [
-          TextFormComponent(
-            labelText: 'Categorie Name',
-            initialValue: _formData['name']?.toString(),
-            keyboardType: TextInputType.name,
-            onSaved: (name) => _formData['name'] = name ?? '',
-            validator: (_name) {
-              final name = _name ?? '';
-              return categoriesForm.validateFormName(name);
-            },
-          ),
-        ],
-      )),
+            children: [
+              TextFormComponent(
+                labelText: 'Categorie Name',
+                initialValue: _formData['name']?.toString(),
+                keyboardType: TextInputType.name,
+                onSaved: (name) => _formData['name'] = name ?? '',
+                validator: (_name) {
+                  final name = _name ?? '';
+                  return categoriesForm.validateFormName(name);
+                },
+              ),
+            ],
+          )),
     );
   }
 }
