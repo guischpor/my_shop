@@ -1,4 +1,6 @@
-class CategoriesModel {
+import 'package:flutter/material.dart';
+
+class CategoriesModel with ChangeNotifier {
   final String id;
   final String name;
 

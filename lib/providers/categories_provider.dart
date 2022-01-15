@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:my_shop/core/exceptions/http_exceptions.dart';
 import 'package:my_shop/core/utils/constants/endpoints.dart';
 import 'package:my_shop/models/categories_model.dart';
 import 'package:my_shop/widgets/show_snackbar_dialog.dart';
@@ -37,7 +38,7 @@ class CategoriesProvider with ChangeNotifier {
       ),
     );
 
-    if (response.body != 'null') return;
+    if (response.body == 'null') return;
 
     Map<String, dynamic> data = jsonDecode(response.body);
 
@@ -138,5 +139,33 @@ class CategoriesProvider with ChangeNotifier {
   Future<void> removeCategorie(
     CategoriesModel categories,
     BuildContext context,
-  ) async {}
+  ) async {
+    int index = _items.indexWhere((p) => p.id == categories.id);
+
+    //verifica se temos o ID correspondente e remove o item!
+    if (index >= 0) {
+      final categorie = _items[index];
+
+      //primeiramente será excluido o item localmente
+      _items.remove(categorie);
+      notifyListeners();
+
+      //caso a resposta de certo, sera removido no firebase
+      final response = await http.delete(
+        Uri.parse(
+          '${Endpoints.categoriesUrl}/${categorie.id}.json?auth=$_token',
+        ),
+      );
+
+      //caso contrario, ele recupera os items excluidos
+      if (response.statusCode >= 400) {
+        _items.insert(index, categorie);
+        notifyListeners();
+        throw HttpException(
+          msg: 'Error deleting the categorie!',
+          statusCode: response.statusCode,
+        );
+      }
+    }
+  }
 }

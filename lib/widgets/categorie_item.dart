@@ -82,7 +82,7 @@ class CategorieItem extends StatelessWidget {
                         labelActionButton: '',
                         onPressed: () => Null,
                         contentWidget: const Text(
-                          'Successfully deleted product!',
+                          'Successfully deleted categorie!',
                         ),
                       ),
                     );
