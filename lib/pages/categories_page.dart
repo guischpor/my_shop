@@ -5,8 +5,28 @@ import 'package:my_shop/widgets/categorie_item.dart';
 import 'package:my_shop/widgets/drawer/app_drawer.dart';
 import 'package:provider/provider.dart';
 
-class CategoriesPage extends StatelessWidget {
+class CategoriesPage extends StatefulWidget {
   const CategoriesPage({Key? key}) : super(key: key);
+
+  @override
+  State<CategoriesPage> createState() => _CategoriesPageState();
+}
+
+class _CategoriesPageState extends State<CategoriesPage> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<CategoriesProvider>(
+      context,
+      listen: false,
+    ).loadingCategories().then((value) => {
+          setState(() {
+            _isLoading = false;
+          })
+        });
+  }
 
   @override
   Widget build(BuildContext context) {

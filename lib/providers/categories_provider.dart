@@ -55,10 +55,8 @@ class CategoriesProvider with ChangeNotifier {
   //metodo que salva os items de categorias
   Future<void> saveCategorie(
     Map<String, Object> data,
-    BuildContext context, [
-    bool? isEdited,
-    bool? isAdd,
-  ]) async {
+    BuildContext context,
+  ) async {
     bool hasId = data['id'] != null;
 
     final categorie = CategoriesModel(
@@ -133,7 +131,26 @@ class CategoriesProvider with ChangeNotifier {
   //metodo altera nova categoria
   Future<void> updateCategorie(
     CategoriesModel categories,
-  ) async {}
+  ) async {
+    int index = _items.indexWhere((c) => c.id == categories.id);
+
+    //verifica se temos o ID correspondente e altera o item!
+    if (index >= 0) {
+      await http.patch(
+        Uri.parse(
+          '${Endpoints.categoriesUrl}/${categories.id}.json?auth=$_token',
+        ),
+        body: jsonEncode(
+          {
+            'name': categories.name,
+          },
+        ),
+      );
+
+      _items[index] = categories;
+      notifyListeners();
+    }
+  }
 
   //metodo que remove um item categoria
   Future<void> removeCategorie(
