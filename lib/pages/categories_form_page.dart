@@ -29,6 +29,7 @@ class _CategoriesFormPageState extends State<CategoriesFormPage> {
 
       if (arg != null) {
         final categorie = arg as CategoriesModel;
+        _formData['id'] = categorie.id;
         _formData['name'] = categorie.name;
       }
     }

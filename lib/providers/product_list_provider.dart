@@ -57,6 +57,12 @@ class ProductListProvider with ChangeNotifier {
     Map<String, dynamic> favData =
         favResponse.body == 'null' ? {} : jsonDecode(favResponse.body);
 
+    // final categorieResponse = await http.get(
+    //   Uri.parse(
+    //     '${Endpoints.categoriesUrl}.json?auth=$_token',
+    //   ),
+    // );  
+
     Map<String, dynamic> data = jsonDecode(response.body);
 
     data.forEach((productId, productData) {
@@ -67,6 +73,7 @@ class ProductListProvider with ChangeNotifier {
         description: productData['description'],
         price: productData['price'],
         imageUrl: productData['imageUrl'],
+        categorie: productData['categorie'],
         isFavorite: isFavorite,
       ));
     });
@@ -87,6 +94,7 @@ class ProductListProvider with ChangeNotifier {
       description: data['description'] as String,
       price: data['price'] as double,
       imageUrl: data['imageUrl'] as String,
+      categorie: data['categorie'] as String,
     );
 
     //metodo que verifica se ele tem um ID ele alterar, caso não, ele cria uma novo item
@@ -143,6 +151,7 @@ class ProductListProvider with ChangeNotifier {
           'description': product.description,
           'price': product.price,
           'imageUrl': product.imageUrl,
+          'categorie': product.categorie,
         },
       ),
     );
@@ -155,6 +164,7 @@ class ProductListProvider with ChangeNotifier {
       description: product.description,
       price: product.price,
       imageUrl: product.imageUrl,
+      categorie: product.categorie,
     ));
     notifyListeners();
   }
@@ -174,6 +184,7 @@ class ProductListProvider with ChangeNotifier {
             'description': product.description,
             'price': product.price,
             'imageUrl': product.imageUrl,
+            'categorie': product.categorie,
           },
         ),
       );

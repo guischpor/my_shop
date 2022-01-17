@@ -128,7 +128,7 @@ class CategoriesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //metodo altera nova categoria
+  // metodo altera nova categoria
   Future<void> updateCategorie(
     CategoriesModel categories,
   ) async {
@@ -152,29 +152,29 @@ class CategoriesProvider with ChangeNotifier {
     }
   }
 
-  //metodo que remove um item categoria
+  // metodo que remove um item categoria
   Future<void> removeCategorie(
     CategoriesModel categories,
     BuildContext context,
   ) async {
     int index = _items.indexWhere((p) => p.id == categories.id);
 
-    //verifica se temos o ID correspondente e remove o item!
+    // verifica se temos o ID correspondente e remove o item!
     if (index >= 0) {
       final categorie = _items[index];
 
-      //primeiramente será excluido o item localmente
+      // primeiramente será excluido o item localmente
       _items.remove(categorie);
       notifyListeners();
 
-      //caso a resposta de certo, sera removido no firebase
+      // caso a resposta de certo, sera removido no firebase
       final response = await http.delete(
         Uri.parse(
           '${Endpoints.categoriesUrl}/${categorie.id}.json?auth=$_token',
         ),
       );
 
-      //caso contrario, ele recupera os items excluidos
+      // caso contrario, ele recupera os items excluidos
       if (response.statusCode >= 400) {
         _items.insert(index, categorie);
         notifyListeners();

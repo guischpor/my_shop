@@ -42,17 +42,19 @@ class _CategoriesPageState extends State<CategoriesPage> {
         onRefresh: () => categories.refreshCategories(context),
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: categories.itemsCount,
-            itemBuilder: (context, index) => Column(
-              children: [
-                CategorieItem(
-                  categorie: categories.items[index],
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  itemCount: categories.itemsCount,
+                  itemBuilder: (context, index) => Column(
+                    children: [
+                      CategorieItem(
+                        categorie: categories.items[index],
+                      ),
+                      const Divider(color: Colors.grey),
+                    ],
+                  ),
                 ),
-                const Divider(color: Colors.grey),
-              ],
-            ),
-          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

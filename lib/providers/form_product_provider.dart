@@ -47,6 +47,7 @@ class FormProductProvider with ChangeNotifier {
     bool endsWithFile = url.toLowerCase().endsWith('.png') ||
         url.toLowerCase().endsWith('.jpg') ||
         url.toLowerCase().endsWith('.jpeg');
+        url.toLowerCase().endsWith('.webp');
 
     final validImage = isValidUrl && endsWithFile;
 
