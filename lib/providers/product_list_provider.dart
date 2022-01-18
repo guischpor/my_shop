@@ -10,11 +10,19 @@ import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 
 class ProductListProvider with ChangeNotifier {
   // final List<Product> _items = dummyProducts;
-  final List<Product> _items = [];
+  String _token;
+  String _userId;
+  List<Product> _items = [];
 
   List<Product> get items => [..._items];
   List<Product> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
+
+  ProductListProvider([
+    this._token = '',
+    this._userId = '',
+    this._items = const [],
+  ]);
 
   int get itemsCount {
     return _items.length;
@@ -31,22 +39,42 @@ class ProductListProvider with ChangeNotifier {
     _items.clear();
 
     final response = await http.get(
-      Uri.parse('${Endpoints.productBaseUrl}.json'),
+      Uri.parse(
+        '${Endpoints.productBaseUrl}.json?auth=$_token',
+      ),
     );
     // print(jsonDecode(response.body));
 
     if (response.body == 'null') return;
 
+    //favResponse é uma requisição get que tras a lista de produtos favoritados pelo usuario
+    final favResponse = await http.get(
+      Uri.parse(
+        '${Endpoints.userFavoritesUrl}/$_userId.json?auth=$_token',
+      ),
+    );
+
+    Map<String, dynamic> favData =
+        favResponse.body == 'null' ? {} : jsonDecode(favResponse.body);
+
+    // final categorieResponse = await http.get(
+    //   Uri.parse(
+    //     '${Endpoints.categoriesUrl}.json?auth=$_token',
+    //   ),
+    // );  
+
     Map<String, dynamic> data = jsonDecode(response.body);
 
     data.forEach((productId, productData) {
+      final isFavorite = favData[productId] ?? false;
       _items.add(Product(
         id: productId,
         name: productData['name'],
         description: productData['description'],
         price: productData['price'],
         imageUrl: productData['imageUrl'],
-        isFavorite: productData['isFavorite'],
+        categorie: productData['categorie'],
+        isFavorite: isFavorite,
       ));
     });
 
@@ -66,6 +94,7 @@ class ProductListProvider with ChangeNotifier {
       description: data['description'] as String,
       price: data['price'] as double,
       imageUrl: data['imageUrl'] as String,
+      categorie: data['categorie'] as String,
     );
 
     //metodo que verifica se ele tem um ID ele alterar, caso não, ele cria uma novo item
@@ -113,14 +142,16 @@ class ProductListProvider with ChangeNotifier {
     BuildContext context,
   ) async {
     final response = await http.post(
-      Uri.parse('${Endpoints.productBaseUrl}.json'),
+      Uri.parse(
+        '${Endpoints.productBaseUrl}.json?auth=$_token',
+      ),
       body: jsonEncode(
         {
           'name': product.name,
           'description': product.description,
           'price': product.price,
           'imageUrl': product.imageUrl,
-          'isFavorite': product.isFavorite,
+          'categorie': product.categorie,
         },
       ),
     );
@@ -133,7 +164,7 @@ class ProductListProvider with ChangeNotifier {
       description: product.description,
       price: product.price,
       imageUrl: product.imageUrl,
-      isFavorite: product.isFavorite,
+      categorie: product.categorie,
     ));
     notifyListeners();
   }
@@ -144,13 +175,16 @@ class ProductListProvider with ChangeNotifier {
     //verifica se temos o ID correspondente e altera o item!
     if (index >= 0) {
       await http.patch(
-        Uri.parse('${Endpoints.productBaseUrl}/${product.id}.json'),
+        Uri.parse(
+          '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
+        ),
         body: jsonEncode(
           {
             'name': product.name,
             'description': product.description,
             'price': product.price,
             'imageUrl': product.imageUrl,
+            'categorie': product.categorie,
           },
         ),
       );
@@ -176,7 +210,9 @@ class ProductListProvider with ChangeNotifier {
 
       //caso a resposta de certo, sera removido no firebase
       final response = await http.delete(
-        Uri.parse('${Endpoints.productBaseUrl}/${product.id}.json'),
+        Uri.parse(
+          '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
+        ),
       );
 
       //caso contrario, ele recupera os items excluidos

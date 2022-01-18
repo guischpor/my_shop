@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_shop/core/exceptions/http_exceptions.dart';
 import 'package:my_shop/core/utils/app_routes.dart';
+import 'package:my_shop/providers/auth_provider.dart';
 import 'package:my_shop/providers/cart_provider.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/widgets/show_snackbar_dialog.dart';
@@ -13,6 +14,7 @@ class ProductGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<CartProvider>(context);
+    final auth = Provider.of<AuthProvider>(context, listen: false);
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
@@ -37,7 +39,10 @@ class ProductGridItem extends StatelessWidget {
             builder: (context, product, _) => IconButton(
               onPressed: () async {
                 try {
-                  await product.toggleFavorite();
+                  await product.toggleFavorite(
+                    auth.token ?? '',
+                    auth.userId ?? '',
+                  );
                 } on HttpException catch (error) {
                   scaffoldMessenger.hideCurrentSnackBar();
                   scaffoldMessenger.showSnackBar(

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop/providers/product_list_provider.dart';
-import 'package:provider/provider.dart';
 
 class FormProductProvider with ChangeNotifier {
   //validação do campo name
@@ -49,6 +47,7 @@ class FormProductProvider with ChangeNotifier {
     bool endsWithFile = url.toLowerCase().endsWith('.png') ||
         url.toLowerCase().endsWith('.jpg') ||
         url.toLowerCase().endsWith('.jpeg');
+        url.toLowerCase().endsWith('.webp');
 
     final validImage = isValidUrl && endsWithFile;
 

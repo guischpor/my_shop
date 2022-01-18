@@ -1,14 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_shop/models/categories_model.dart';
 import 'package:my_shop/models/product.dart';
+import 'package:my_shop/providers/categories_provider.dart';
 import 'package:my_shop/providers/form_product_provider.dart';
 import 'package:my_shop/providers/product_list_provider.dart';
 import 'package:my_shop/core/utils/formatters/real_money_formatter.dart';
 import 'package:my_shop/widgets/forms/text_form_component.dart';
 import 'package:my_shop/widgets/show_dialog_message.dart';
-import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 import 'dart:io';
 
 import 'package:provider/provider.dart';
@@ -21,9 +20,6 @@ class ProductFormPage extends StatefulWidget {
 }
 
 class _ProductFormPageState extends State<ProductFormPage> {
-  // final _nameController = TextEditingController();
-  // final _priceController = TextEditingController();
-  // final _descriptionController = TextEditingController();
   final _imageUrlController = TextEditingController();
 
   final _priceFocus = FocusNode();
@@ -34,6 +30,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _formData = <String, Object>{};
+  String? categorieSelected;
 
   bool _isLoading = false;
 
@@ -58,8 +55,9 @@ class _ProductFormPageState extends State<ProductFormPage> {
         _formData['price'] = product.price;
         _formData['description'] = product.description;
         _formData['imageUrl'] = product.imageUrl;
-
+        _formData['categorie'] = product.categorie;
         _imageUrlController.text = product.imageUrl;
+        categorieSelected = product.categorie;
       }
     }
   }
@@ -67,10 +65,6 @@ class _ProductFormPageState extends State<ProductFormPage> {
   @override
   void dispose() {
     super.dispose();
-    // _nameController.dispose();
-    // _descriptionController.dispose();
-    // _priceController.dispose();
-    // _imageUrlController.dispose();
     _imageUrlController.removeListener(_updateImage);
 
     _priceFocus.dispose();
@@ -146,6 +140,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   Widget _body() {
     final FormProductProvider formProvider = Provider.of(context);
+    final CategoriesProvider categorie = Provider.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Form(
@@ -255,9 +251,55 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 )
               ],
             ),
+            const SizedBox(height: 20),
+            dropDownList(
+                title: 'Categorias',
+                value: categorieSelected,
+                itemsList: categorie.items.map(buildMenuItem).toList(),
+                onChanged: (item) {
+                  setState(() {
+                    categorieSelected = item;
+                    _formData['categorie'] = item;
+                  });
+
+                  print(categorieSelected);
+                }),
           ],
         ),
       ),
     );
   }
+
+  Widget dropDownList({
+    String? title,
+    List<DropdownMenuItem<dynamic>>? itemsList,
+    void Function(dynamic)? onChanged,
+    dynamic value,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title!,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 17,
+            color: Colors.grey[700],
+          ),
+        ),
+        DropdownButton(
+          isExpanded: true,
+          value: value,
+          items: itemsList,
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+
+  DropdownMenuItem<String> buildMenuItem(CategoriesModel item) =>
+      DropdownMenuItem(
+        value: item.name,
+        child: Text(item.name),
+      );
 }

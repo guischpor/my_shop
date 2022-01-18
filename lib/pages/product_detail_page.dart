@@ -43,6 +43,15 @@ class ProductDetailPage extends StatelessWidget {
                 products.description,
                 textAlign: TextAlign.center,
               ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              child: Text(
+                'Categorie: ${products.categorie}',
+                textAlign: TextAlign.center,
+              ),
             )
           ],
         ),

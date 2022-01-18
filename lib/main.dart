@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop/pages/auth_or_home_page.dart';
 import 'package:my_shop/pages/cart_page.dart';
+import 'package:my_shop/pages/categories_form_page.dart';
+import 'package:my_shop/pages/categories_page.dart';
 import 'package:my_shop/pages/orders_page.dart';
 import 'package:my_shop/pages/product_detail_page.dart';
 import 'package:my_shop/pages/product_form_page.dart';
 import 'package:my_shop/pages/product_page.dart';
-import 'package:my_shop/pages/products_overwiew_page.dart';
-import 'package:my_shop/providers/order_list_provider.dart';
-import 'package:my_shop/providers/product_list_provider.dart';
-import 'package:my_shop/providers/form_product_provider.dart';
 import 'package:provider/provider.dart';
+import 'core/providers_list/providers_list.dart';
 import 'core/utils/app_routes.dart';
-import 'providers/cart_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,21 +20,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final list = ProvidersList();
+
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => ProductListProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => CartProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => OrderListProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => FormProductProvider(),
-        ),
-      ],
+      providers: list.providers,
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -47,12 +35,14 @@ class MyApp extends StatelessWidget {
         ),
         // home: const ProductsOverViewPage(),
         routes: {
-          AppRoutes.homePage: (context) => const ProductsOverViewPage(),
+          AppRoutes.authOrHomePage: (context) => const AuthOrHomePage(),
           AppRoutes.productDetailPage: (context) => const ProductDetailPage(),
           AppRoutes.cartPage: (context) => const CartPage(),
           AppRoutes.ordersPage: (context) => const OrdersPage(),
           AppRoutes.productsPage: (context) => const ProductPage(),
           AppRoutes.productsFormPage: (context) => const ProductFormPage(),
+          AppRoutes.categoriesPage: (context) => const CategoriesPage(),
+          AppRoutes.categoriesFormPage: (context) => CategoriesFormPage(),
           // AppRoutes.productDetailPage: (context) => const CounterPage(),
         },
         debugShowCheckedModeBanner: false,
