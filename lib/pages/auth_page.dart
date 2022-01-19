@@ -17,16 +17,20 @@ class AuthPage extends StatelessWidget {
   }
 
   Widget _body(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _titleApp(),
-          const SizedBox(height: 20),
-          const AuthForm(),
-        ],
+    return Center(
+      child: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _titleApp(),
+              const SizedBox(height: 20),
+              const AuthForm(),
+            ],
+          ),
+        ),
       ),
     );
   }
