@@ -8,6 +8,7 @@ import 'package:my_shop/pages/product_detail_page.dart';
 import 'package:my_shop/pages/product_form_page.dart';
 import 'package:my_shop/pages/product_page.dart';
 import 'package:provider/provider.dart';
+import 'core/custom_transitions_routes/custom_transitions_routes_list.dart';
 import 'core/providers_list/providers_list.dart';
 import 'core/utils/app_routes.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final list = ProvidersList();
+    final customTransitionsRouteList = CustomTransitionsRouteList();
 
     return MultiProvider(
       providers: list.providers,
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.purple,
           ),
           fontFamily: 'Lato',
+          pageTransitionsTheme: customTransitionsRouteList.pageTransitionsTheme,
         ),
         // home: const ProductsOverViewPage(),
         routes: {
@@ -42,7 +45,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.productsPage: (context) => const ProductPage(),
           AppRoutes.productsFormPage: (context) => const ProductFormPage(),
           AppRoutes.categoriesPage: (context) => const CategoriesPage(),
-          AppRoutes.categoriesFormPage: (context) => CategoriesFormPage(),
+          AppRoutes.categoriesFormPage: (context) => const CategoriesFormPage(),
           // AppRoutes.productDetailPage: (context) => const CounterPage(),
         },
         debugShowCheckedModeBanner: false,

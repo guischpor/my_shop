@@ -16,53 +16,61 @@ class OrderWidget extends StatefulWidget {
 
 class _OrderWidgetState extends State<OrderWidget> {
   bool _expanded = false;
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _expanded = !_expanded;
-              });
-            },
-            child: ListTile(
-              title: Text('R\$ ${widget.order.total.toStringAsFixed(2)}'),
-              subtitle: Text(
-                DateFormat('dd/MM/yyyy hh:mm').format(widget.order.date),
-              ),
-              trailing: IconButton(
-                icon: Icon(
-                  _expanded ? Icons.expand_less : Icons.expand_more,
+    final itemsHight = (widget.order.products.length * 25.0) + 10;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 280),
+      height: _expanded ? itemsHight + 80 : 80,
+      child: Card(
+        elevation: 4,
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _expanded = !_expanded;
+                });
+              },
+              child: ListTile(
+                title: Text('R\$ ${widget.order.total.toStringAsFixed(2)}'),
+                subtitle: Text(
+                  DateFormat('dd/MM/yyyy hh:mm').format(widget.order.date),
                 ),
-                onPressed: () {
-                  setState(() {
-                    _expanded = !_expanded;
-                  });
-                },
+                trailing: IconButton(
+                  icon: Icon(
+                    _expanded ? Icons.expand_less : Icons.expand_more,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _expanded = !_expanded;
+                    });
+                  },
+                ),
               ),
             ),
-          ),
-          if (_expanded)
-            Container(
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 280),
+              height: _expanded ? itemsHight : 0,
               padding: const EdgeInsets.symmetric(
                 horizontal: 15,
                 vertical: 4,
               ),
-              height: (widget.order.products.length * 25.0) + 10,
               child: ListView(
                 children: widget.order.products.map(
                   (product) {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          product.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Text(
+                            product.name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                         Text(
@@ -78,7 +86,8 @@ class _OrderWidgetState extends State<OrderWidget> {
                 ).toList(),
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

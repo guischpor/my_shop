@@ -34,6 +34,10 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed(
                 AppRoutes.ordersPage,
               );
+
+              // Navigator.of(context).pushReplacement(
+              //   CustomRoute(builder: (context) => const OrdersPage()),
+              // );
             },
           ),
           const Divider(),

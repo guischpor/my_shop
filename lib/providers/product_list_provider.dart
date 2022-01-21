@@ -57,12 +57,6 @@ class ProductListProvider with ChangeNotifier {
     Map<String, dynamic> favData =
         favResponse.body == 'null' ? {} : jsonDecode(favResponse.body);
 
-    // final categorieResponse = await http.get(
-    //   Uri.parse(
-    //     '${Endpoints.categoriesUrl}.json?auth=$_token',
-    //   ),
-    // );  
-
     Map<String, dynamic> data = jsonDecode(response.body);
 
     data.forEach((productId, productData) {
