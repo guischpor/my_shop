@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:my_shop/models/categories_model.dart';
 import 'package:my_shop/providers/categories_form_provider.dart';
@@ -58,6 +56,7 @@ class _CategoriesFormPageState extends State<CategoriesFormPage> {
 
       Navigator.of(context).pop();
     } catch (e) {
+      // ignore: avoid_print
       print(e.toString());
       await showDialogMessage(
         context: context,

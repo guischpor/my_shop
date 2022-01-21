@@ -38,6 +38,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
   void initState() {
     super.initState();
     _imageUrlController.addListener(_updateImage);
+    Provider.of<CategoriesProvider>(
+      context,
+      listen: false,
+    ).loadingCategories();
   }
 
   @override

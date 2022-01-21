@@ -90,6 +90,7 @@ class ProductItem extends StatelessWidget {
                       ),
                     );
                   } on HttpException catch (error) {
+                    // ignore: avoid_print
                     print(error.toString());
 
                     msg.hideCurrentSnackBar();
