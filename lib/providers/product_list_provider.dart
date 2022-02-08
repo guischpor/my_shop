@@ -7,12 +7,11 @@ import 'package:my_shop/core/utils/constants/endpoints.dart';
 // import 'package:my_shop/data/dummy_data.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/widgets/show_snackbar_dialog.dart';
-
 import '../core/services/client_http.dart';
 
 class ProductListProvider with ChangeNotifier {
   // final List<Product> _items = dummyProducts;
-  var clientHttp = ClientHttp();
+  final ClientHttp client;
   String _token;
   String _userId;
   List<Product> _items = [];
@@ -21,7 +20,8 @@ class ProductListProvider with ChangeNotifier {
   List<Product> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
 
-  ProductListProvider([
+  ProductListProvider(
+    this.client, [
     this._token = '',
     this._userId = '',
     this._items = const [],
@@ -41,7 +41,7 @@ class ProductListProvider with ChangeNotifier {
   Future<void> loadingProducts() async {
     _items.clear();
 
-    final response = await clientHttp.get(
+    final response = await client.get(
       url: '${Endpoints.productBaseUrl}.json?auth=$_token',
     );
 
@@ -135,7 +135,7 @@ class ProductListProvider with ChangeNotifier {
     Product product,
     BuildContext context,
   ) async {
-    final response = await clientHttp.post(
+    final response = await client.post(
       url: '${Endpoints.productBaseUrl}.json?auth=$_token',
       body: jsonEncode(
         {
@@ -166,7 +166,7 @@ class ProductListProvider with ChangeNotifier {
     int index = _items.indexWhere((p) => p.id == product.id);
 
     if (index >= 0) {
-      await clientHttp.patch(
+      await client.patch(
         url: '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
         body: jsonEncode(
           {
@@ -199,7 +199,7 @@ class ProductListProvider with ChangeNotifier {
       notifyListeners();
 
       //caso a resposta de certo, sera removido no firebase
-      final response = await clientHttp.delete(
+      final response = await client.delete(
         url: '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
       );
 
