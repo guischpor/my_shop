@@ -8,8 +8,11 @@ import 'package:my_shop/core/utils/constants/endpoints.dart';
 import 'package:my_shop/models/product.dart';
 import 'package:my_shop/widgets/show_snackbar_dialog.dart';
 
+import '../core/services/client_http.dart';
+
 class ProductListProvider with ChangeNotifier {
   // final List<Product> _items = dummyProducts;
+  var clientHttp = ClientHttp();
   String _token;
   String _userId;
   List<Product> _items = [];
@@ -38,12 +41,9 @@ class ProductListProvider with ChangeNotifier {
   Future<void> loadingProducts() async {
     _items.clear();
 
-    final response = await http.get(
-      Uri.parse(
-        '${Endpoints.productBaseUrl}.json?auth=$_token',
-      ),
+    final response = await clientHttp.get(
+      url: '${Endpoints.productBaseUrl}.json?auth=$_token',
     );
-    // print(jsonDecode(response.body));
 
     if (response.body == 'null') return;
 
@@ -135,10 +135,8 @@ class ProductListProvider with ChangeNotifier {
     Product product,
     BuildContext context,
   ) async {
-    final response = await http.post(
-      Uri.parse(
-        '${Endpoints.productBaseUrl}.json?auth=$_token',
-      ),
+    final response = await clientHttp.post(
+      url: '${Endpoints.productBaseUrl}.json?auth=$_token',
       body: jsonEncode(
         {
           'name': product.name,
@@ -150,6 +148,7 @@ class ProductListProvider with ChangeNotifier {
       ),
     );
 
+    // final id = jsonDecode(response.body)['name'];
     final id = jsonDecode(response.body)['name'];
 
     _items.add(Product(
@@ -166,12 +165,9 @@ class ProductListProvider with ChangeNotifier {
   Future<void> updateProduct(Product product) async {
     int index = _items.indexWhere((p) => p.id == product.id);
 
-    //verifica se temos o ID correspondente e altera o item!
     if (index >= 0) {
-      await http.patch(
-        Uri.parse(
-          '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
-        ),
+      await clientHttp.patch(
+        url: '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
         body: jsonEncode(
           {
             'name': product.name,
@@ -203,10 +199,8 @@ class ProductListProvider with ChangeNotifier {
       notifyListeners();
 
       //caso a resposta de certo, sera removido no firebase
-      final response = await http.delete(
-        Uri.parse(
-          '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
-        ),
+      final response = await clientHttp.delete(
+        url: '${Endpoints.productBaseUrl}/${product.id}.json?auth=$_token',
       );
 
       //caso contrario, ele recupera os items excluidos

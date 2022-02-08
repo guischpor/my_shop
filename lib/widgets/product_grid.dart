@@ -11,7 +11,7 @@ class ProductGrid extends StatelessWidget {
     Key? key,
     required this.showFavoriteOnly,
   }) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductListProvider>(context);
